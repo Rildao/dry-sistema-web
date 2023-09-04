@@ -1,7 +1,5 @@
 # 🌐 Dry Land's modas web
 
-<br>
-
 ## ℹ index
 
 -   [📥 download](#-download)
