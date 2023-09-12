@@ -7,6 +7,6 @@
 
 <style scoped>
 .p-toast.p-toast-topright {
-    top: 114px;
+    top: 84px;
 }
 </style>
