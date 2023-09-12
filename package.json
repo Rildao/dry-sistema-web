@@ -2,7 +2,6 @@
     "name": "Dry Land Modas - WEB",
     "version": "0.0.1",
     "scripts": {
-        "ci": "npm install -f",
         "start": "vite",
         "dev": "vite",
         "build": "vite build",
