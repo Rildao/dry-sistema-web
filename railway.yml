@@ -1,0 +1,38 @@
+# railway.yml
+
+# Variáveis de ambiente
+env:
+  # Defina suas variáveis de ambiente aqui
+  # Exemplo:
+  API_KEY: your_api_key
+  DATABASE_URL: your_database_url
+
+# Comandos personalizados (opcional)
+commands:
+  # Comando para construir sua aplicação Vue.js e Vite.js
+  build:
+    description: Build the Vue.js and Vite.js application
+    script: npm run build
+    public: true  # Define se este comando é público ou não
+  
+  start:
+    description: Start the Vue.js and Vite.js application
+    script: npm run preview
+    public: true  # Define se este comando é público ou não
+
+# Serviços (opcional)
+services:
+  # Serviço para executar sua aplicação Vue.js e Vite.js
+  web:
+    image: node:16  # Use a imagem Docker desejada
+    ports:
+      - 3000:3000  # Mapeie a porta interna para a porta externa desejada
+    env:
+      NODE_ENV: production  # Configure o ambiente de execução
+    build:
+      - build  # Use o diretório de construção da aplicação
+
+# Deploy automático (opcional)
+autoDeploy:
+  # Configure o ramo a ser implantado automaticamente
+  branch: main
