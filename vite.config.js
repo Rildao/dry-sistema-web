@@ -12,9 +12,10 @@ export default defineConfig(({ mode }) => {
                     '@': fileURLToPath(new URL('./src', import.meta.url))
                 }
             },
-            preview: {
-                port: 3000
-                // host: ''
+            build: {
+                // Defina o diretório de saída para construir seu aplicativo no Railway
+                outDir: 'dist' // O Railway usa 'dist' por padrão para saída de build
+                // Defina seu caminho base, se necessário (por exemplo, se o aplicativo não estiver na raiz do domínio)
             }
         };
     } else {
