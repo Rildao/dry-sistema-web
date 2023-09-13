@@ -2,6 +2,7 @@
     "name": "Dry Land Modas - WEB",
     "version": "0.0.1",
     "scripts": {
+        "start": "npx http-server ./dist",
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview",
