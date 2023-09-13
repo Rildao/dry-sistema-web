@@ -15,7 +15,8 @@ export default defineConfig(() => {
             outDir: 'dist' // Diretório de saída para os arquivos de produção
         },
         server: {
-            port: import.meta.env.PORT, // Porta do servidor de desenvolvimento
+            // eslint-disable-next-line no-undef
+            port: process.env.PORT, // Porta do servidor de desenvolvimento
             host: '0.0.0.0'
         }
     };
