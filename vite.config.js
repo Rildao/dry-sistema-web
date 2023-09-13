@@ -13,11 +13,6 @@ export default defineConfig(() => {
         },
         build: {
             outDir: 'dist' // Diretório de saída para os arquivos de produção
-        },
-        server: {
-            // eslint-disable-next-line no-undef
-            port: process.env.PORT, // Porta do servidor de desenvolvimento
-            host: '0.0.0.0'
         }
     };
 });
