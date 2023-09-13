@@ -127,11 +127,6 @@ export default {
     outline: none;
 }
 
-.button.ghost {
-    background-color: transparent;
-    border-color: #ffffff;
-}
-
 .form {
     background-color: #ffffff;
     display: flex;
@@ -141,11 +136,6 @@ export default {
     padding: 0 50px;
     height: 100%;
     text-align: center;
-}
-
-.img {
-    width: 85%;
-    border-radius: 130px;
 }
 
 .input {
@@ -187,20 +177,6 @@ export default {
     transform: translateX(100%);
 }
 
-.sign-up-container {
-    left: 0;
-    width: 50%;
-    opacity: 0;
-    z-index: 1;
-}
-
-.container.right-panel-active .sign-up-container {
-    transform: translateX(100%);
-    opacity: 1;
-    z-index: 5;
-    animation: show 0.6s;
-}
-
 @keyframes show {
     0%,
     49.99% {
@@ -230,9 +206,6 @@ export default {
 }
 
 .overlay {
-    background: #ff4151;
-    background: -webkit-linear-gradient(to right, #ff4b2b, #ff4151);
-    background: linear-gradient(to right, #ff4b2b, #ff4151);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 0 0;
@@ -264,14 +237,6 @@ export default {
     transition: transform 0.6s ease-in-out;
 }
 
-.overlay-left {
-    transform: translateX(-20%);
-}
-
-.container.right-panel-active .overlay-left {
-    transform: translateX(0);
-}
-
 .overlay-right {
     right: 0;
     transform: translateX(0);
@@ -281,11 +246,7 @@ export default {
     transform: translateX(20%);
 }
 
-.social-container {
-    margin: 20px 0;
-}
-
-.social-container a {
+a {
     border: 1px solid #dddddd;
     border-radius: 50%;
     display: inline-flex;
@@ -294,5 +255,41 @@ export default {
     margin: 0 5px;
     height: 40px;
     width: 40px;
+}
+
+@media screen and (max-width: 426px) {
+    .body {
+        background: #ffffff;
+    }
+    .container {
+        box-shadow: none;
+    }
+    .img-login {
+        display: none;
+    }
+    .sign-in-container {
+        left: 0;
+        width: 100%;
+        z-index: 2;
+    }
+}
+@media screen and (max-width: 1023px) {
+    .container {
+        box-shadow: none;
+    }
+    .body {
+        background: #ffffff;
+    }
+    .img-login {
+        display: none;
+    }
+    .sign-in-container {
+        left: 0;
+        width: 100%;
+        z-index: 2;
+    }
+    .form {
+        padding: 0 80px;
+    }
 }
 </style>
