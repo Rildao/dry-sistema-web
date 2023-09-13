@@ -10,6 +10,12 @@ export default defineConfig(() => {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url))
             }
+        },
+        build: {
+            outDir: 'dist' // Diretório de saída para os arquivos de produção
+        },
+        server: {
+            host: '0.0.0.0'
         }
     };
 });

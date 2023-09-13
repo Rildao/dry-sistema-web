@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "environments": {
+        "production": {
+            "public": "dist", 
+            "buildCommand": "npm install && npm run build",
+            "distDir": "dist", 
+            "routes": {
+                "/": {
+                    "command": "npx serve dist -l 8080",
+                    "port": 8080, 
+                    "public": true
+                }
+            }
+        }
+    }
+}
