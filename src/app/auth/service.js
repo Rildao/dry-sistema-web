@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { apiUrl } from '@/env/env.homolog.json';
+import { apiUrl } from '@/service';
 
 const urlBase = apiUrl + '/auth/login';
 

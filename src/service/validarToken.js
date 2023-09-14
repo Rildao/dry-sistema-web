@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiUrl } from '@/env/env.homolog.json';
+import { apiUrl } from '@/service';
 
 export const validarToken = (token) => {
     if (token != null) {
