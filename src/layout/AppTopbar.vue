@@ -2,7 +2,7 @@
 import { axiosJwt } from '@/service/axiosJwt';
 import { useLayout } from '@/layout/composables/layout';
 const { onMenuToggle } = useLayout();
-
+import { apiUrl } from '@/env/env.homolog.json';
 export default {
     data() {
         return {
@@ -37,7 +37,7 @@ export default {
     methods: {
         logout() {
             this.$store.dispatch('addRequest');
-            axiosJwt.post(import.meta.env.VITE_API_URL + '/api/usuario/logout').then(() => {
+            axiosJwt.post(apiUrl + '/api/usuario/logout').then(() => {
                 this.$router.push('/login');
                 localStorage.removeItem('token');
             });

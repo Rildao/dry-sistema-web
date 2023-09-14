@@ -1,6 +1,7 @@
 import Axios from 'axios';
+import { apiUrl } from '@/env/env.homolog.json';
 
-const urlBase = import.meta.env.VITE_API_URL + '/auth/login';
+const urlBase = apiUrl + '/auth/login';
 
 export const loginService = {
     login(credenciais) {
