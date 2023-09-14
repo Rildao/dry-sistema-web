@@ -1,12 +1,6 @@
 <template>
-    <Toast />
+    <Toast position="top-right" style="top: 30px" :baseZIndex="1000" />
     <ConfirmDialog />
     <loading v-if="$store.getters.isLoading" />
     <router-view />
 </template>
-
-<style scoped>
-.p-toast.p-toast-topright {
-    top: 84px;
-}
-</style>
