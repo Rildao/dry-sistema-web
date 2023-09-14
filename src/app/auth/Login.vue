@@ -58,7 +58,7 @@ export default {
     <div class="body">
         <div class="container" id="container">
             <div class="form-container sign-in-container">
-                <form class="form" action="#">
+                <div class="form">
                     <h1 class="h1 mb-2">Bem-vindo(a) ao Dry Land's Sistema</h1>
 
                     <input class="input" v-model="email" @input="v$.email.$touch()" type="email" placeholder="E-mail" />
@@ -67,8 +67,8 @@ export default {
                     <input class="input" v-model="senha" @input="v$.senha.$touch()" type="password" placeholder="Senha" />
                     <small class="p-error mb-3" v-if="v$.senha.$error">Senha é obrigatória</small>
 
-                    <button class="button mt-3" type="submit" @click="send">Entrar</button>
-                </form>
+                    <button class="button mt-3" type="submit" @click="send()">Entrar</button>
+                </div>
             </div>
 
             <div class="overlay-container">
