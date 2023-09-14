@@ -1,3 +1,4 @@
 import { axiosJwt } from './axiosJwt';
+import { apiUrl } from './apiUrl';
 
-export { axiosJwt };
+export { axiosJwt, apiUrl };

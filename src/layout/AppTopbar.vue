@@ -2,7 +2,7 @@
 import { axiosJwt } from '@/service/axiosJwt';
 import { useLayout } from '@/layout/composables/layout';
 const { onMenuToggle } = useLayout();
-import { apiUrl } from '@/env/env.homolog.json';
+import { apiUrl } from '@/service';
 export default {
     data() {
         return {
@@ -111,5 +111,6 @@ export default {
                 </Menu>
             </button>
         </div>
-    </div>
+        
+            </div>
 </template>

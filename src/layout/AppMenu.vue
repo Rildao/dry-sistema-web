@@ -4,41 +4,7 @@ import { ref } from 'vue';
 import AppMenuItem from './AppMenuItem.vue';
 import { appMenus } from '../app/menu.js';
 
-const model = ref([
-    ...appMenus
-    // {
-    //     label: 'Pages',
-    //     icon: 'pi pi-fw pi-briefcase',
-    //     to: '/pages',
-    //     items: [
-    //         {
-    //             label: 'Landing',
-    //             icon: 'pi pi-fw pi-globe',
-    //             to: '/landing'
-    //         },
-    //         {
-    //             label: 'Login',
-    //             icon: 'pi pi-user',
-    //             to: '/login'
-    //         },
-    //         {
-    //             label: 'Error',
-    //             icon: 'pi pi-fw pi-times-circle',
-    //             to: '/error'
-    //         },
-    //         {
-    //             label: 'Access Denied',
-    //             icon: 'pi pi-fw pi-lock',
-    //             to: '/access'
-    //         },
-    //         {
-    //             label: 'Not Found',
-    //             icon: 'pi pi-fw pi-exclamation-circle',
-    //             to: '/notfound'
-    //         }
-    //     ]
-    // }
-]);
+const model = ref([...appMenus]);
 </script>
 
 <template>
