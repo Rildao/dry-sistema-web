@@ -12,11 +12,7 @@ export default defineConfig(() => {
             }
         },
         build: {
-            outDir: 'dist' // Diretório de saída para os arquivos de produção
-        },
-        server: {
-            port: import.meta.env.PORT, // Porta do servidor de desenvolvimento
-            host: '0.0.0.0'
+            outDir: 'dist'
         }
     };
 });
