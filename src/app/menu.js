@@ -1,4 +1,4 @@
 import { homeMenu } from './home/menu';
-import { adminMenu } from './admin/menu';
+import { clienteMenu } from './cliente/menu';
 
-export const appMenus = [homeMenu, adminMenu];
+export const appMenus = [homeMenu, clienteMenu];
