@@ -1,5 +1,5 @@
-export const cadastrarClienteRota = {
-    path: '/cliente/cadastrarCliente',
-    name: 'Cadastrar Cliente',
+export const novoClienteRota = {
+    path: '/clientes/novo-cliente',
+    name: 'Cliente',
     component: () => import('./cadastroCliente.vue')
 };

@@ -1,5 +1,5 @@
-export const cadastrarClienteMenu = {
-            label: 'Cadastrar cliente',
-            icon: 'pi pi-user-plus',
-            to: '/cliente/cadastrarCliente',
+export const novoClienteMenu = {
+    label: 'Cadastrar Cliente',
+    icon: 'pi pi-user-plus',
+    to: '/clientes/novo-cliente'
 };
