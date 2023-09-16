@@ -1,11 +1,10 @@
-import Axios from 'axios';
+import { axiosJwt } from "@/service";
 import { apiUrl } from '@/service';
 
 const urlBase = apiUrl + '/api/cliente';
 
 export const ClienteService = {
   criarCliente(cliente) {
-    console.info(cliente);
-    return Axios.post(urlBase, cliente);
+    return axiosJwt.post(urlBase, cliente);
   }
 };
