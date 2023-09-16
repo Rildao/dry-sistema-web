@@ -76,8 +76,8 @@ export default {
                 <div class="formgrid grid">
                     <div class="field col-12 lg:col-9 md:col-9">
                         <label for="nome">Nome*</label>
-                        <InputText id="nome" @input="v$.nome.$touch()" :class="{ 'p-invalid': v$.nome.$error }" class="w-full" v-model="nome" type="text" placeholder="Nome" />
-                        <small class="p-error mb-3" v-if="v$.nome.$error">Nome é obrigatório</small>
+                        <InputText id="nome" @input="v$.nome.$touch()" :class="{ 'p-invalid': nome !== null && v$.nome.$error }" class="w-full" v-model="nome" type="text" placeholder="Nome" />
+                        <small class="p-error mb-3" v-if="nome !== null && v$.nome.$error">Nome é obrigatório</small>
                     </div>
                     <div class="field col-12 lg:col-3 md:col-3">
                         <label for="cpf">CPF</label>
