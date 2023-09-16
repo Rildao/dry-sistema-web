@@ -1,6 +1,7 @@
 <script>
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import { ClienteService } from "@/app/cliente/service";
 
 export default {
   data() {
@@ -16,11 +17,42 @@ export default {
   },
   validations() {
     return {
-      nome: { required },
-      cpf: { required },
-      telefone: { required },
-      endereco: { required }
+      nome: { required }
     };
+  },
+  methods: {
+    cadastrar() {
+      this.v$.$touch();
+      if (this.v$.$invalid) return;
+      this.$store.dispatch("addRequest");
+      this.criarCliente();
+    },
+    criarCliente() {
+      const cliente = {
+        nome: this.nome,
+        telefone: this.telefone,
+        endereco: this.endereco,
+        cpf: this.cpf
+      };
+      ClienteService
+        .criarCliente(cliente)
+        .then((res) => {
+          if (res.data.accessToken != null) {
+            localStorage.setItem("token", res.data.accessToken);
+            this.$router.push("/");
+          }
+          this.$store.dispatch("removeRequest");
+        })
+        .catch((erro) => {
+          this.$toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: `${erro.response.data.descricao}`,
+            life: 3000
+          });
+          this.$store.dispatch("removeRequest");
+        });
+    }
   }
 };
 </script>
@@ -37,7 +69,8 @@ export default {
         <div class="formgrid grid">
           <div class="field col-12 lg:col-9 md:col-9  ">
             <label for="nome">Nome*</label>
-            <InputText id="nome" class="w-full" v-model="nome" type="text" />
+            <InputText id="nome" @input="v$.nome.$touch()" class="w-full" v-model="nome" type="text" />
+            <small class="p-error mb-3" v-if="v$.nome.$error">Nome é obrigatório</small>
           </div>
           <div class="field col-12 lg:col-3 md:col-3">
             <label for="cpf">CPF</label>
@@ -53,12 +86,12 @@ export default {
           </div>
           <div class="field col-12 lg:col-9  md:col-9">
             <label for="endereco">Endereço</label>
-            <InputText id="endereco" class="w-full" v-model="cpf" type="text" :class="{ 'p-invalid': errorMessage }"
+            <InputText id="endereco" class="w-full" v-model="endereco" type="text" :class="{ 'p-invalid': errorMessage }"
                        aria-describedby="text-error" />
           </div>
           <div class="field col-12 lg:col-offset-10 md:col-offset-10 mt-4">
             <Button label="Primary" class="w-full lg:w-14rem md:w-14rem justify-content-center" type="submit"
-                    @click="salvarCliente()">Cadastrar
+                    @click="cadastrar()">Cadastrar
             </Button>
           </div>
         </div>
