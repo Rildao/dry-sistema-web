@@ -42,18 +42,19 @@ export default {
             };
             console.log(cliente);
             ClienteService.criarCliente(cliente)
-                .then(() => {
+                .then((res) => {
+                    console.log(res);
                     this.$store.dispatch('removeRequest');
-                    this.$toast.add({
-                        severity: 'success',
-                        summary: 'Successo',
-                        detail: `Criado com sucesso!`,
-                        life: 3000
-                    });
-                })
-                .catch((e) => {
-                    console.log(e);
-                    this.$toast.add({ severity: 'error', summary: 'Error', detail: `${e.errors.descricao}`, life: 3000 });
+                    if (res.success === true) {
+                        this.$toast.add({
+                            severity: 'success',
+                            summary: 'Successo',
+                            detail: `Criado com sucesso!`,
+                            life: 3000
+                        });
+                    } else {
+                        this.$toast.add({ severity: 'error', summary: 'Error', detail: `${res.errors.descricao}`, life: 3000 });
+                    }
                 })
                 .finally(() => {
                     (this.cpf = null), (this.nome = null), (this.endereco = null), (this.telefone = null);
