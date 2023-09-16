@@ -27,14 +27,11 @@ export default {
             this.$store.dispatch('addRequest');
             this.criarCliente();
         },
-        formatarCPF(cpf){
-          return cpf.replaceAll('.', '').replace(`-`,``)
+        formatarCPF(cpf) {
+            return cpf.replaceAll('.', '').replace(`-`, ``);
         },
-        formatarTelefone(telefone){
-          return telefone.replace('(', '')
-            .replace(')', '')
-            .replace('-', '')
-            .replace(' ', '')
+        formatarTelefone(telefone) {
+            return telefone.replace('(', '').replace(')', '').replace('-', '').replace(' ', '');
         },
         criarCliente() {
             const cliente = {
@@ -43,7 +40,7 @@ export default {
                 endereco: this.endereco,
                 cpf: this.formatarCPF(this.cpf)
             };
-          console.log(cliente);
+            console.log(cliente);
             ClienteService.criarCliente(cliente)
                 .then(() => {
                     this.$store.dispatch('removeRequest');
@@ -78,7 +75,7 @@ export default {
                 <div class="formgrid grid">
                     <div class="field col-12 lg:col-9 md:col-9">
                         <label for="nome">Nome*</label>
-                        <InputText id="nome" @input="v$.nome.$touch()" :class="{ 'p-invalid': v$.nome.$error }" class="w-full" v-model="nome" type="text" />
+                        <InputText id="nome" @input="v$.nome.$touch()" :class="{ 'p-invalid': v$.nome.$error }" class="w-full" v-model="nome" type="text" placeholder="Nome" />
                         <small class="p-error mb-3" v-if="v$.nome.$error">Nome é obrigatório</small>
                     </div>
                     <div class="field col-12 lg:col-3 md:col-3">
@@ -91,25 +88,25 @@ export default {
                     </div>
                     <div class="field col-12 lg:col-9 md:col-9">
                         <label for="endereco">Endereço</label>
-                        <InputText id="endereco" class="w-full" v-model="endereco" type="text" />
+                        <InputText id="endereco" class="w-full" v-model="endereco" placeholder="Endereco" type="text" />
                     </div>
 
-                    <div class="field col-12 lg:col-offset-10  mt-4">
+                    <div class="field col-12 lg:col-offset-10 mt-4">
                         <Button label="Primary" class="w-full lg:w-2 justify-content-center" @click.stop="cadastrar()">Cadastrar </Button>
                     </div>
                 </div>
             </Fieldset>
-<!--          <Fieldset>-->
-<!--                <template #legend>-->
-<!--                    <div class="flex align-items-center text-primary">-->
-<!--                        <span class="pi pi-user mr-2"></span>-->
-<!--                        <span class="font-bold text-lg">Vendas</span>-->
-<!--                    </div>-->
-<!--                </template>-->
-<!--            <Tabela :data="[]">-->
-<!--              -->
-<!--            </Tabela>-->
-<!--            </Fieldset>-->
+            <!--          <Fieldset>-->
+            <!--                <template #legend>-->
+            <!--                    <div class="flex align-items-center text-primary">-->
+            <!--                        <span class="pi pi-user mr-2"></span>-->
+            <!--                        <span class="font-bold text-lg">Vendas</span>-->
+            <!--                    </div>-->
+            <!--                </template>-->
+            <!--            <Tabela :data="[]">-->
+            <!--              -->
+            <!--            </Tabela>-->
+            <!--            </Fieldset>-->
         </template>
     </Card>
 </template>
