@@ -127,9 +127,12 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-::v-deep(.p-paginator) {
-    .p-paginator-current {
-        margin-left: auto;
-    }
+:deep(.p-datatable-header) {
+    background: #fff;
+    color: #fff;
+    border: 1px solid #dee2e6;
+    border-width: 1px 0 1px 0;
+    padding: 1rem 1rem;
+    font-weight: 700;
 }
 </style>

@@ -10,16 +10,16 @@ export default {
             topbarMenuActive: { value: false },
 
             items: [
-                {
-                    label: 'Opções',
-                    items: [
-                        {
-                            label: 'Configurações',
-                            icon: 'pi pi-cog'
-                        },
-                        { separator: true }
-                    ]
-                }
+                // {
+                //     label: 'Opções',
+                //     items: [
+                //         {
+                //             label: 'Configurações',
+                //             icon: 'pi pi-cog'
+                //         },
+                //         { separator: true }
+                //     ]
+                // }
             ]
         };
     },
@@ -111,6 +111,5 @@ export default {
                 </Menu>
             </button>
         </div>
-        
-            </div>
+    </div>
 </template>

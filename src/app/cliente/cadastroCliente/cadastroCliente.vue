@@ -9,7 +9,8 @@ export default {
             nome: '',
             telefone: '',
             endereco: '',
-            cpf: ''
+            cpf: '',
+            modal: false
         };
     },
     setup() {
@@ -59,6 +60,9 @@ export default {
                 .finally(() => {
                     (this.cpf = null), (this.nome = null), (this.endereco = null), (this.telefone = null);
                 });
+        },
+        abrirModal() {
+            this.modal = true;
         }
     }
 };
@@ -70,7 +74,7 @@ export default {
                 <template #legend>
                     <div class="flex align-items-center text-primary">
                         <span class="pi pi-user mr-2"></span>
-                        <span class="font-bold text-lg">Cadastrar cliente</span>
+                        <span class="font-bold text-lg">Dados do Cliente</span>
                     </div>
                 </template>
                 <div class="formgrid grid">
@@ -91,23 +95,40 @@ export default {
                         <label for="endereco">Endereço</label>
                         <InputText id="endereco" class="w-full" v-model="endereco" placeholder="Endereco" type="text" />
                     </div>
-
-                    <div class="field col-12 lg:col-offset-10 mt-4">
-                        <Button label="Primary" class="w-full lg:w-2 justify-content-center" @click.stop="cadastrar()">Cadastrar </Button>
-                    </div>
                 </div>
             </Fieldset>
-            <!--          <Fieldset>-->
-            <!--                <template #legend>-->
-            <!--                    <div class="flex align-items-center text-primary">-->
-            <!--                        <span class="pi pi-user mr-2"></span>-->
-            <!--                        <span class="font-bold text-lg">Vendas</span>-->
-            <!--                    </div>-->
-            <!--                </template>-->
-            <!--            <Tabela :data="[]">-->
-            <!--              -->
-            <!--            </Tabela>-->
-            <!--            </Fieldset>-->
+            <br />
+            <Fieldset>
+                <template #legend>
+                    <div class="flex align-items-center text-primary">
+                        <span class="pi pi-shopping-cart mr-2"></span>
+                        <span class="font-bold text-lg">Vendas</span>
+                    </div>
+                </template>
+                <Tabela :data="[]">
+                    <template #botoes>
+                        <Button icon="pi pi-plus" label="Adiconar Venda" @click.stop="abrirModal()" severity="primary" outlined />
+                    </template>
+                </Tabela>
+            </Fieldset>
+            <Dialog v-model:visible="modal" modal :closable="false" :style="{ width: '50vw' }">
+                <Fieldset>
+                    <template #legend>
+                        <div class="flex align-items-center text-primary">
+                            <span class="pi pi-shopping-cart mr-2"></span>
+                            <span class="font-bold text-lg">Dados da Venda</span>
+                        </div>
+                    </template>
+                </Fieldset>
+                <template #footer>
+                    <Button label="Voltar" icon="pi pi-times" @click="modal = false" text />
+                    <Button label="Adicionar" icon="pi pi-plus" @click="modal = false" autofocus />
+                </template>
+            </Dialog>
+            <br />
+            <div class="flex align-items-center text-primary justify-content-end">
+                <Button label="Primary" class="w-full lg:w-2 justify-content-center" @click.stop="cadastrar()">Cadastrar </Button>
+            </div>
         </template>
     </Card>
 </template>
