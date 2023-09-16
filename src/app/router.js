@@ -1,4 +1,4 @@
 import { homeRota } from './home/router';
-import { adminRota } from './admin/router';
+import { clienteRota } from './cliente/router';
 
-export const appRotas = [homeRota, adminRota];
+export const appRotas = [homeRota, clienteRota];
