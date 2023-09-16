@@ -35,7 +35,7 @@ export default {
                 cpf: this.cpf
             };
             ClienteService.criarCliente(cliente)
-                .then((res) => {
+                .then(() => {
                     this.$store.dispatch('removeRequest');
                     this.$toast.add({
                         severity: 'success',
