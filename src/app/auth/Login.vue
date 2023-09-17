@@ -54,36 +54,34 @@ export default {
 </script>
 
 <template>
-    <div class="body">
-        <div class="container" id="container">
-            <div class="form-container sign-in-container">
-                <div class="form">
-                    <h1 class="h1 mb-2">Bem-vindo(a) ao Dry Land's Sistema</h1>
-
-                    <input class="input" v-model="email" @input="v$.email.$touch()" type="email" placeholder="E-mail" />
-                    <small class="p-error mb-3" v-if="v$.email.$error">E-mail é obrigatório</small>
-
-                    <input class="input" v-model="senha" @input="v$.senha.$touch()" type="password" placeholder="Senha" />
-                    <small class="p-error mb-3" v-if="v$.senha.$error">Senha é obrigatória</small>
-
-                    <button class="button mt-3" type="submit" @click="send()">Entrar</button>
-                </div>
+    <div class="body-login">
+        <form @submit.prevent="send" class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+            <div class="text-center mb-5">
+                <img src="/demo/images/login/login.png" alt="Image" height="90" class="mb-3" />
+                <div class="text-900 text-3xl font-medium mb-3">Bem-vindo(a) ao Dry Land's Sistema</div>
             </div>
 
-            <div class="overlay-container">
-                <div class="overlay">
-                    <!-- ⚠️ adicionar imagem -->
-                    <div class="overlay-panel overlay-right">
-                        <img src="/demo/images/login/login.png" alt="login" class="img-login" />
-                    </div>
+            <Message severity="error" v-if="(senha !== null && v$.senha.$error) || (email !== null && v$.email.$error)"> E-mail e Senha são obrigatórios </Message>
+
+            <div>
+                <label for="email1" class="block text-900 font-medium mb-2">Email*</label>
+                <InputText @input="v$.email.$touch()" :class="{ 'p-invalid': email !== null && v$.email.$error }" v-model="email" id="email1" type="text" placeholder="Email" class="w-full mb-3" />
+
+                <label for="password1" class="block text-900 font-medium mb-2">Senha*</label>
+                <InputText @input="v$.senha.$touch()" :class="{ 'p-invalid': senha !== null && v$.senha.$error }" v-model="senha" id="password1" type="password" placeholder="Senha" class="w-full mb-3" />
+
+                <div class="flex align-items-center justify-content-end mb-6">
+                    <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer"> Esqueceu sua senha? </a>
                 </div>
+
+                <Button label="Entrar" icon="pi pi-user" type="submit" class="w-full"></Button>
             </div>
-        </div>
+        </form>
     </div>
 </template>
 
 <style>
-.body {
+.body-login {
     background: #f6f5f7;
     display: flex;
     justify-content: center;
