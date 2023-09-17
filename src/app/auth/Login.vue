@@ -1,5 +1,5 @@
 <script>
-import { loginService } from './service';
+import { LoginService } from '@/service';
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
@@ -31,8 +31,7 @@ export default {
                 email: this.email,
                 senha: this.senha
             };
-            loginService
-                .login(credenciais)
+            LoginService.login(credenciais)
                 .then((res) => {
                     if (res.data.accessToken != null) {
                         localStorage.setItem('token', res.data.accessToken);
@@ -245,8 +244,6 @@ export default {
 .container.right-panel-active .overlay-right {
     transform: translateX(20%);
 }
-
-
 
 @media screen and (max-width: 426px) {
     .body {

@@ -1,7 +1,17 @@
 <script>
+import { DashboardService } from '@/service';
+
 export default {
     data() {
         return {
+            painelAdministrativo: {
+                totalClientes: '',
+                totalVendas: '',
+                totalValorCrediario: '',
+                totalValorPix: '',
+                totalValorCartao: '',
+                totalValorDinheiro: ''
+            },
             products: {
                 value: null
             },
@@ -29,6 +39,16 @@ export default {
                 ]
             }
         };
+    },
+    mounted() {
+        this.buscarPainelAdministrativo();
+    },
+    methods: {
+        buscarPainelAdministrativo() {
+            DashboardService.buscarPainelAdministrativo().then((res) => {
+                this.painelAdministrativo = res.data;
+            });
+        }
     }
 };
 </script>
@@ -40,7 +60,10 @@ export default {
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Vendas</span>
-                        <div class="text-900 font-medium text-xl">152</div>
+                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalVendas">
+                            {{ painelAdministrativo.totalVendas }}
+                        </div>
+                        <Skeleton width="5rem" class="mb-2" v-else></Skeleton>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
@@ -54,7 +77,10 @@ export default {
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Clientes</span>
-                        <div class="text-900 font-medium text-xl">100</div>
+                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalClientes">
+                            {{ painelAdministrativo.totalClientes }}
+                        </div>
+                        <Skeleton width="5rem" class="mb-2" v-else></Skeleton>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-purple-100 border-round" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-users text-purple-500 text-xl"></i>
@@ -68,7 +94,8 @@ export default {
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Valor Crediario</span>
-                        <div class="text-900 font-medium text-xl">R$ 4.000,00</div>
+                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalValorCrediario">R$ {{ painelAdministrativo.totalValorCrediario }}</div>
+                        <Skeleton width="5rem" class="mb-2" v-else></Skeleton>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-green-100 border-round" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-dollar text-green-500 text-xl"></i>
