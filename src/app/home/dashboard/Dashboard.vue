@@ -4,6 +4,8 @@ import { DashboardService } from '@/service';
 export default {
     data() {
         return {
+            isHovered: false,
+            isHovered1: false,
             painelAdministrativo: {
                 totalClientes: '',
                 totalVendas: '',
@@ -48,6 +50,24 @@ export default {
             DashboardService.buscarPainelAdministrativo().then((res) => {
                 this.painelAdministrativo = res.data;
             });
+        },
+        redirectVendas() {
+            this.$router.push('/vendas');
+        },
+        redirectClientes() {
+            this.$router.push('/clientes');
+        },
+        mouseOver() {
+            this.isHovered = true;
+        },
+        mouseLeave() {
+            this.isHovered = false;
+        },
+        mouseOver1() {
+            this.isHovered1 = true;
+        },
+        mouseLeave1() {
+            this.isHovered1 = false;
         }
     }
 };
@@ -56,7 +76,7 @@ export default {
 <template>
     <div class="grid">
         <div class="col-12 lg:col-8 xl:col-4">
-            <div class="card mb-0">
+            <div class="card mb-0 div-clicavel" @mouseover="mouseOver" @mouseleave="mouseLeave" :class="{ 'dark-overlay': isHovered }" @click="redirectVendas">
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Vendas</span>
@@ -73,7 +93,7 @@ export default {
             </div>
         </div>
         <div class="col-12 lg:col-8 xl:col-4">
-            <div class="card mb-0">
+            <div class="card mb-0 div-clicavel" @mouseover="mouseOver1" @mouseleave="mouseLeave1" :class="{ 'dark-overlay': isHovered1 }" @click="redirectClientes">
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Clientes</span>
@@ -94,7 +114,9 @@ export default {
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Valor Crediario</span>
-                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalValorCrediario">R$ {{ painelAdministrativo.totalValorCrediario }}</div>
+                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalValorCrediario == '0' ? true : '' || painelAdministrativo.totalValorCrediario">
+                            {{ $formatarValorReal(painelAdministrativo.totalValorCrediario) }}
+                        </div>
                         <Skeleton width="5rem" class="mb-2" v-else></Skeleton>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-green-100 border-round" style="width: 2.5rem; height: 2.5rem">
@@ -104,33 +126,16 @@ export default {
                 <span class="text-500">Valor total de vendas no crediario</span>
             </div>
         </div>
-        <!-- <div class="col-12 lg:col-6 xl:col-3">
-            <div class="card mb-0">
-                <div class="flex justify-content-between mb-3">
-                    <div>
-                        <span class="block text-500 font-medium mb-3">Comments</span>
-                        <div class="text-900 font-medium text-xl">152 Unread</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-center bg-purple-100 border-round" style="width: 2.5rem; height: 2.5rem">
-                        <i class="pi pi-comment text-purple-500 text-xl"></i>
-                    </div>
-                </div>
-                <span class="text-green-500 font-medium">85 </span>
-                <span class="text-500">responded</span>
-            </div>
-        </div> -->
-
-        <!-- <div class="col-12 xl:col-6">
-            <div class="card">
-                <h5>Sales Overview</h5>
-                <Chart type="bar" :data="lineData" :options="lineOptions" />
-            </div>
-        </div>
-        <div class="col-12 xl:col-6">
-            <div class="card">
-                <h5>Sales Overview</h5>
-                <Chart type="line" :data="lineData" :options="lineOptions" />
-            </div>
-        </div> -->
     </div>
 </template>
+
+<style scoped>
+.div-clicavel {
+    cursor: pointer;
+}
+.dark-overlay {
+    background-color: rgba(185, 215, 245, 0.01);
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+</style>
