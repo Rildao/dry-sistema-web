@@ -76,6 +76,9 @@ export default {
         },
         toggle(event) {
             this.$refs.menu.toggle(event);
+        },
+        redirectNotificacoes() {
+            this.$router.push('/notificacoes');
         }
     }
 };
@@ -92,8 +95,8 @@ export default {
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <Button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i v-badge="2" class="pi pi-bell p-overlay-badge" />
+            <Button @click="redirectNotificacoes()" class="p-link layout-topbar-button">
+                <i v-badge="0" class="pi pi-bell p-overlay-badge" />
                 <span class="span">Notificação</span>
             </Button>
 
