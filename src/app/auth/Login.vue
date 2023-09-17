@@ -55,7 +55,7 @@ export default {
 
 <template>
     <div class="body-login">
-        <form @submit.prevent="send" class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+        <form @submit.prevent="send" class="surface-card p-4 shadow-2 border-round w-full lg:w-6 xl:w-4">
             <div class="text-center mb-5">
                 <img src="/demo/images/login/login.png" alt="Image" height="90" class="mb-3" />
                 <div class="text-900 text-3xl font-medium mb-3">Bem-vindo(a) ao Dry Land's Sistema</div>
@@ -69,10 +69,6 @@ export default {
 
                 <label for="password1" class="block text-900 font-medium mb-2">Senha*</label>
                 <InputText @input="v$.senha.$touch()" :class="{ 'p-invalid': senha !== null && v$.senha.$error }" v-model="senha" id="password1" type="password" placeholder="Senha" class="w-full mb-3" />
-
-                <div class="flex align-items-center justify-content-end mb-6">
-                    <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer"> Esqueceu sua senha? </a>
-                </div>
 
                 <Button label="Entrar" icon="pi pi-user" type="submit" class="w-full"></Button>
             </div>
