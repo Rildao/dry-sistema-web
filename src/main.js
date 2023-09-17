@@ -112,6 +112,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome';
 import { formatarValorReal } from './utils/formatarValorReal';
+import { formatarData } from './utils/formatarData';
 
 library.add(fas);
 
@@ -160,6 +161,7 @@ app.use(PrimeVue, {
 });
 
 app.config.globalProperties.$formatarValorReal = formatarValorReal;
+app.config.globalProperties.$formatarData = formatarData;
 
 app.use(store);
 app.use(router);
