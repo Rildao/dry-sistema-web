@@ -1,7 +1,7 @@
 <script>
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
-import { ClienteService } from '@/app/cliente/service';
+import { ClienteService } from '@/service';
 
 export default {
     data() {
@@ -10,7 +10,12 @@ export default {
             telefone: '',
             endereco: '',
             cpf: '',
-            modal: false
+            modal: false,
+            vendas: [
+                {
+                    id: 1
+                }
+            ]
         };
     },
     setup() {
@@ -41,7 +46,6 @@ export default {
                 endereco: this.endereco,
                 cpf: this.formatarCPF(this.cpf)
             };
-            console.log(cliente);
             ClienteService.criarCliente(cliente)
                 .then((res) => {
                     console.log(res);
@@ -105,9 +109,17 @@ export default {
                         <span class="font-bold text-lg">Vendas</span>
                     </div>
                 </template>
-                <Tabela :data="[]">
+                <Tabela :data="vendas">
                     <template #botoes>
                         <Button icon="pi pi-plus" label="Adiconar Venda" @click.stop="abrirModal()" severity="primary" outlined />
+                    </template>
+
+                    <template #conteudo>
+                        <Column field="id" header="Id" :sortable="true">
+                            <template #body="slotProps">
+                                {{ slotProps.data.id }}
+                            </template>
+                        </Column>
                     </template>
                 </Tabela>
             </Fieldset>
