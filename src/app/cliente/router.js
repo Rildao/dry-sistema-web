@@ -1,8 +1,9 @@
 import { novoClienteRota } from './cadastroCliente/router';
+import { editarClienteRota } from './cadastroCliente/router';
 
 export const clienteRota = {
     path: '/clientes',
     name: 'Cliente',
     component: () => import('./Cliente.vue'),
-    children: [novoClienteRota]
+    children: [novoClienteRota, editarClienteRota]
 };
