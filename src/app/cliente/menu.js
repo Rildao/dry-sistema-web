@@ -1,4 +1,5 @@
 import { novoClienteMenu } from '@/app/cliente/cadastroCliente/menu';
+import { listaClienteMenu } from "@/app/cliente/listaCliente/menu";
 
 export const clienteMenu = {
     items: [
@@ -6,7 +7,7 @@ export const clienteMenu = {
             label: 'Clientes',
             icon: 'pi pi-users',
             to: '/clientes',
-            items: [novoClienteMenu]
+            items: [novoClienteMenu, listaClienteMenu]
         }
     ]
 };
