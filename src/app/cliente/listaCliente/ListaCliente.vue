@@ -1,5 +1,6 @@
 <script>
 import { ClienteService } from '@/service';
+import { FilterMatchMode } from 'primevue/api';
 
 export default {
     components: {},
@@ -7,13 +8,15 @@ export default {
         return {
             listaDeCliente: [],
             clienteSelecionado: null,
-            linha: 5
+            filters: {
+                global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+            }
         };
     },
     mounted() {
         ClienteService.listarCliente().then((res) => {
             console.log(res);
-            this.tamanhoTotal = res.dat
+            this.tamanhoTotal = res.dat;
             this.listaDeCliente = res.data.clientes;
         });
     },
@@ -32,10 +35,10 @@ export default {
             let route = this.$router.resolve(`/clientes/editar-cliente/${this.clienteSelecionado.id}`);
             window.open(route.href, '_blank');
         },
-        pesquisa(){
-          ClienteService.listarCliente(this.pesquisa).then((res) => {
-            this.listaDeCliente = res.data.clientes
-          })
+        pesquisa() {
+            ClienteService.listarCliente(this.filters).then((res) => {
+                this.listaDeCliente = res.data.clientes;
+            });
         }
     }
 };
@@ -50,12 +53,23 @@ export default {
                         <span class="font-bold text-lg">Listagem de Clientes</span>
                     </div>
                 </template>
-                <DataTable v-model:selection="clienteSelecionado"  paginator :rows="5" :rowsPerPageOptions="[5,10,15]" :value="listaDeCliente" selectionMode="single" dataKey="id" :metaKeySelection="true">
-                    <template #header >
+                <DataTable
+                    v-model:selection="clienteSelecionado"
+                    v-model:filters="filters"
+                    :globalFilterFields="['nome', 'cpf']"
+                    paginator
+                    :rows="5"
+                    :rowsPerPageOptions="[5, 10, 15]"
+                    :value="listaDeCliente"
+                    selectionMode="single"
+                    dataKey="id"
+                    :metaKeySelection="true"
+                >
+                    <template #header>
                         <div class="table-header flex flex-column md:flex-row justify-content-between">
                             <span class="p-input-icon-left">
                                 <i class="pi pi-search" />
-                                <InputText v-model="pesquisa" placeholder="Pesquisar..." />
+                                <InputText v-model="filters['global'].value" placeholder="Pesquisar..." />
                             </span>
                         </div>
                     </template>
@@ -67,20 +81,14 @@ export default {
                     </Column>
                     <Column field="telefone" bodyClass="pointer" header="Telefone">
                         <template #body="{ data }">
-                                {{ maskTelefone(data.telefone) }}
+                            {{ maskTelefone(data.telefone) }}
                         </template>
                     </Column>
                 </DataTable>
-
             </Fieldset>
         </template>
     </Card>
 </template>
 <style>
-.acao-butoes {
-    padding: 15px;
-}
-.pointer {
-    cursor: pointer;
-}
+
 </style>
