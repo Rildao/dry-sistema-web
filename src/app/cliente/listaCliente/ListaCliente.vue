@@ -15,7 +15,6 @@ export default {
     },
     mounted() {
         ClienteService.listarCliente().then((res) => {
-            console.log(res);
             this.tamanhoTotal = res.dat;
             this.listaDeCliente = res.data.clientes;
         });
@@ -36,7 +35,7 @@ export default {
             window.open(route.href, '_blank');
         },
         pesquisa() {
-            ClienteService.listarCliente(this.filters).then((res) => {
+            ClienteService.listarCliente().then((res) => {
                 this.listaDeCliente = res.data.clientes;
             });
         }
@@ -89,6 +88,3 @@ export default {
         </template>
     </Card>
 </template>
-<style>
-
-</style>
