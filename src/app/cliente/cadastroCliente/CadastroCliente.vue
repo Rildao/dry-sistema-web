@@ -6,6 +6,7 @@ import { ClienteService } from '@/service';
 export default {
     data() {
         return {
+            id: '',
             nome: '',
             telefone: '',
             endereco: '',
@@ -13,12 +14,13 @@ export default {
             modal: false,
             vendas: [],
             venda: {
+                id: '',
                 tipoVenda: '',
                 quantidadeParcelas: '',
                 valorVenda: '',
                 dataVenda: '',
                 statusVenda: '',
-                dataVencimentoLancamento: ''
+                diaVencimentoLancamento: ''
             },
             tipoVendaEnum: [
                 { codigo: 'CREDIARIO', nome: 'Crediário' },
@@ -30,7 +32,9 @@ export default {
                 { codigo: 'ATRASADO', nome: 'Atrasado' },
                 { codigo: 'PAGO', nome: 'Pago' },
                 { codigo: 'ANDAMENTO', nome: 'Andamento' }
-            ]
+            ],
+            rotaClienteNovo: false,
+            rotaClienteEditar: false
         };
     },
     setup() {
@@ -40,6 +44,14 @@ export default {
         return {
             nome: { required }
         };
+    },
+    mounted() {
+        if (this.$route.params.id && this.$route.name == 'Cliente Editar') {
+            this.rotaClienteEditar = true;
+            this.buscarClientePorId();
+        } else if (this.$route.name == 'Cliente Novo') {
+            this.rotaClienteNovo = true;
+        }
     },
     methods: {
         cadastrar() {
@@ -54,15 +66,38 @@ export default {
         formatarTelefone(telefone) {
             return telefone.replace('(', '').replace(')', '').replace('-', '').replace(' ', '');
         },
+        buscarClientePorId() {
+            this.$store.dispatch('addRequest');
+
+            ClienteService.buscarClientePorId(this.$route.params.id)
+                .then((res) => {
+                    this.$store.dispatch('removeRequest');
+                    if (res.success === true) {
+                        this.id = res.data.id;
+                        this.nome = res.data.nome;
+                        this.telefone = res.data.telefone;
+                        this.endereco = res.data.endereco;
+                        this.cpf = res.data.cpf;
+                        this.vendas = res.data.vendas;
+                    } else {
+                        this.$toast.add({ severity: 'error', summary: 'Error', detail: `${res.errors.descricao}`, life: 3000 });
+                    }
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
+        },
         criarCliente() {
             const cliente = {
+                id: this.id,
                 nome: this.nome,
                 telefone: this.formatarTelefone(this.telefone),
                 endereco: this.endereco,
                 cpf: this.formatarCPF(this.cpf),
                 vendas: this.vendas
             };
-            if (cliente.vendas.length === 0) {
+
+            if (cliente.vendas.length === 0 && this.rotaClienteNovo) {
                 this.cadastrarClienteSemVendas(cliente);
             } else {
                 this.cadastrarClienteComVendas(cliente);
@@ -72,10 +107,10 @@ export default {
             this.$store.dispatch('addRequest');
             ClienteService.criarCliente(cliente)
                 .then((res) => {
-                    console.log(res);
                     this.$store.dispatch('removeRequest');
                     if (res.success === true) {
                         this.limparCamposCliente();
+                        this.$router.push('/clientes/editar-cliente/' + res.data.id);
                         this.$toast.add({
                             severity: 'success',
                             summary: 'Successo',
@@ -94,14 +129,14 @@ export default {
             this.$store.dispatch('addRequest');
             ClienteService.criarClienteComVendas(cliente)
                 .then((res) => {
-                    console.log(res);
                     this.$store.dispatch('removeRequest');
                     if (res.success === true) {
                         this.limparCamposCliente();
+                        this.$router.push('/clientes/editar-cliente/' + res.data.id);
                         this.$toast.add({
                             severity: 'success',
                             summary: 'Successo',
-                            detail: `Criado com sucesso!`,
+                            detail: `${cliente.id ? 'Atualizado' : 'Criado'} com sucesso!`,
                             life: 3000
                         });
                     } else {
@@ -141,7 +176,7 @@ export default {
                 quantidadeParcelas: '',
                 valorVenda: '',
                 dataVenda: '',
-                dataVencimentoLancamento: '',
+                diaVencimentoLancamento: '',
                 statusVenda: ''
             };
         },
@@ -177,12 +212,20 @@ export default {
                     return 'warning';
             }
         }
+    },
+    watch: {
+        'venda.dataVenda'() {
+            if (this.venda.dataVenda) {
+                this.venda.diaVencimentoLancamento = this.venda.dataVenda.getDate();
+            }
+        }
     }
 };
 </script>
 <template>
     <Card>
         <template #content>
+            <!-- Cadastro Clientes -->
             <Fieldset>
                 <template #legend>
                     <div class="flex align-items-center text-primary">
@@ -210,7 +253,10 @@ export default {
                     </div>
                 </div>
             </Fieldset>
+
             <br />
+
+            <!-- Listagem Vendas -->
             <Fieldset>
                 <template #legend>
                     <div class="flex align-items-center text-primary">
@@ -253,6 +299,7 @@ export default {
                 </Tabela>
             </Fieldset>
 
+            <!-- Modal Vendas -->
             <Dialog v-model:visible="modal" modal :closable="false" :style="{ width: '50vw' }">
                 <Fieldset>
                     <template #legend>
@@ -278,26 +325,47 @@ export default {
 
                             <InputNumber v-else id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" disabled />
                         </div>
+
                         <div class="field col-12 lg:col-4 md:col-4">
                             <label for="statusVenda">Status</label>
                             <Dropdown id="statusVenda" v-model="venda.statusVenda" :options="statusVendaEnum" optionLabel="nome" optionValue="codigo" showClear placeholder="Selecione o Status" class="w-full" />
                         </div>
+
                         <div class="field col-12 lg:col-4 md:col-4">
                             <label for="dataVenda">Data da Venda</label>
                             <Calendar id="dataVenda" class="w-full" v-model="venda.dataVenda" showIcon placeholder="dd/mm/aaaa" />
                         </div>
+
                         <div class="field col-12 lg:col-4 md:col-4">
-                            <label for="dataVencimentoLancamento">Data de Vencimento do Lancamento</label>
-                            <Calendar id="dataVencimentoLancamento" class="w-full" v-model="venda.dataVencimentoLancamento" showIcon placeholder="dd/mm/aaaa" />
+                            <label for="dataVencimentoLancamento">Dia de Vencimento do Pagamento</label>
+                            <InputNumber v-if="venda.tipoVenda == 'CREDIARIO'" id="dataVencimentoLancamento" class="w-full" v-model="venda.diaVencimentoLancamento" :min="1" :max="30" />
+                            <InputNumber v-else id="dataVencimentoLancamento" class="w-full" :min="1" :max="30" disabled />
+                        </div>
+
+                        <div class="field col-12 lg:col-12 md:col-12">
+                            <label for="abservacao">Observação</label>
+                            <Editor id="abservacao" editorStyle="height: 180px" aria-describedby="editor-error" in>
+                                <template #toolbar>
+                                    <span class="ql-formats">
+                                        <button v-tooltip.bottom="'Bold'" class="ql-bold"></button>
+                                        <button v-tooltip.bottom="'Italic'" class="ql-italic"></button>
+                                        <button v-tooltip.bottom="'Underline'" class="ql-underline"></button>
+                                        <button v-tooltip.bottom="'Ordered List'" class="ql-list ql-active" value="ordered"></button>
+                                    </span>
+                                </template>
+                            </Editor>
                         </div>
                     </div>
                 </Fieldset>
+
                 <template #footer>
                     <Button label="Voltar" icon="pi pi-times" @click="fecharModal()" text />
                     <Button label="Adicionar" icon="pi pi-plus" @click="adicionarVenda()" autofocus />
                 </template>
             </Dialog>
+
             <br />
+
             <div class="flex align-items-center text-primary justify-content-end">
                 <Button label="Primary" class="w-full lg:w-2 justify-content-center" @click.stop="cadastrar()">Cadastrar </Button>
             </div>

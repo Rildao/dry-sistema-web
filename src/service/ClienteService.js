@@ -13,5 +13,7 @@ export const ClienteService = {
     listarCliente(pesquisa = '',pagina = 0, tamanho= 5){
         return axiosJwt.get(urlBase + `?page=${pagina}&size=${tamanho}&sort=nome&filter=${pesquisa}`)
     },
-
+    buscarClientePorId(id) {
+        return axiosJwt.get(urlBase + '/' + id);
+    }
 };
