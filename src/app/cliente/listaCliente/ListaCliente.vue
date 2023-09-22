@@ -10,14 +10,16 @@ export default {
             clienteSelecionado: null,
             filters: {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-            }
+            },
+            first: null,
+            totalDePagina: null,
+            totalDeElementos: null
         };
     },
     mounted() {
         ClienteService.listarCliente().then((res) => {
-            console.log(res);
-            this.tamanhoTotal = res.dat;
             this.listaDeCliente = res.data.clientes;
+            this.totalDePagina = res.data.totalPage;
         });
     },
     methods: {
@@ -28,17 +30,26 @@ export default {
         maskCPF(cpf) {
             cpf = cpf.replace(/[^\d]/g, '');
             return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        },
+        pesquisa(event) {
+            const dados = {
+                filtro: event.filters.global.value !== null ? event.filters.global.value : '',
+                linhas: event.rows ? event.rows : 5,
+                pagina: event.page ? event.page : 0
+            };
+            ClienteService.listarCliente(dados.filtro, dados.linhas, dados.pagina).then((res) => {
+                this.listaDeCliente = res.data.clientes;
+                this.totalDePagina = res.data.totalPage;
+            });
+        },
+        logs(event) {
+            console.log(event);
         }
     },
     watch: {
         clienteSelecionado() {
             let route = this.$router.resolve(`/clientes/editar-cliente/${this.clienteSelecionado.id}`);
             window.open(route.href, '_blank');
-        },
-        pesquisa() {
-            ClienteService.listarCliente(this.filters).then((res) => {
-                this.listaDeCliente = res.data.clientes;
-            });
         }
     }
 };
@@ -57,8 +68,11 @@ export default {
                     v-model:selection="clienteSelecionado"
                     v-model:filters="filters"
                     :globalFilterFields="['nome', 'cpf']"
+                    @page="pesquisa"
                     paginator
                     :rows="5"
+                    :pageCount="totalDePagina"
+                    :totalRecords="totalDeElementos"
                     :rowsPerPageOptions="[5, 10, 15]"
                     :value="listaDeCliente"
                     selectionMode="single"
@@ -84,11 +98,11 @@ export default {
                             {{ maskTelefone(data.telefone) }}
                         </template>
                     </Column>
+                    <template #paginatorend>
+
+                    </template>
                 </DataTable>
             </Fieldset>
         </template>
     </Card>
 </template>
-<style>
-
-</style>
