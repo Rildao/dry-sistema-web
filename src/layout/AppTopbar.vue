@@ -96,7 +96,7 @@ export default {
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <Button @click="redirectNotificacoes()" class="p-link layout-topbar-button">
-                <i v-badge="0" class="pi pi-bell p-overlay-badge" />
+                <i v-badge="1" class="pi pi-bell p-overlay-badge" />
                 <span class="span">Notificação</span>
             </Button>
 

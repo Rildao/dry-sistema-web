@@ -55,7 +55,7 @@ export default {
             this.$router.push('/vendas');
         },
         redirectClientes() {
-            this.$router.push('/clientes');
+            this.$router.push('/clientes/lista-cliente');
         },
         mouseOver() {
             this.isHovered = true;
@@ -80,7 +80,7 @@ export default {
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Vendas</span>
-                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalVendas">
+                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalVendas == '0' ? true : '' || painelAdministrativo.totalVendas">
                             {{ painelAdministrativo.totalVendas }}
                         </div>
                         <Skeleton width="5rem" class="mb-2" v-else></Skeleton>
@@ -97,7 +97,7 @@ export default {
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Clientes</span>
-                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalClientes">
+                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalClientes == '0' ? true : '' || painelAdministrativo.totalClientes">
                             {{ painelAdministrativo.totalClientes }}
                         </div>
                         <Skeleton width="5rem" class="mb-2" v-else></Skeleton>
