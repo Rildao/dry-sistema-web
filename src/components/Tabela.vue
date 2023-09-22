@@ -96,7 +96,6 @@ export default {
         :rowHover="true"
         :rowClass="() => classeLinha"
         v-model:filters="filters"
-        v-model:selection="selectionData"
         :meta-key-selection="true"
         :autoLayout="true"
         :globalFilterFields="globalFilterFields"

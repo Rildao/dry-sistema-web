@@ -46,10 +46,10 @@ export default {
         };
     },
     mounted() {
-        if (this.$route.params.id && this.$route.name == 'Cliente Editar') {
+        if (this.$route.params.id && this.$route.name === 'Cliente Editar') {
             this.rotaClienteEditar = true;
             this.buscarClientePorId();
-        } else if (this.$route.name == 'Cliente Novo') {
+        } else if (this.$route.name === 'Cliente Novo') {
             this.rotaClienteNovo = true;
         }
     },
@@ -292,7 +292,7 @@ export default {
                         </Column>
                         <Column field="quantidadeParcelas" header="Quantidade de Parcelas" :sortable="true">
                             <template #body="slotProps">
-                                {{ slotProps.data.quantidadeParcelas }}
+                                {{ slotProps.data.quantidadeParcelas? slotProps.data.quantidadeParcelas : 0 }}
                             </template>
                         </Column>
                     </template>
@@ -321,7 +321,7 @@ export default {
 
                         <div class="field col-12 lg:col-4 md:col-4">
                             <label for="quantidadeParcelas">Quantidade de Parcelas</label>
-                            <InputNumber v-if="venda.tipoVenda == 'CREDIARIO'" id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" />
+                            <InputNumber v-if="venda.tipoVenda === 'CREDIARIO'" id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" />
 
                             <InputNumber v-else id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" disabled />
                         </div>
@@ -338,7 +338,7 @@ export default {
 
                         <div class="field col-12 lg:col-4 md:col-4">
                             <label for="dataVencimentoLancamento">Dia de Vencimento do Pagamento</label>
-                            <InputNumber v-if="venda.tipoVenda == 'CREDIARIO'" id="dataVencimentoLancamento" class="w-full" v-model="venda.diaVencimentoLancamento" :min="1" :max="30" />
+                            <InputNumber v-if="venda.tipoVenda === 'CREDIARIO'" id="dataVencimentoLancamento" class="w-full" v-model="venda.diaVencimentoLancamento" :min="1" :max="30" />
                             <InputNumber v-else id="dataVencimentoLancamento" class="w-full" :min="1" :max="30" disabled />
                         </div>
 
