@@ -23,7 +23,8 @@ export default {
     components: {},
     data() {
         return {
-            listaDeVenda: []
+            listaDeVenda: [],
+            totalDePaginal: null
         };
     },
     mounted() {
@@ -31,6 +32,19 @@ export default {
             this.tamanhoTotal = res.data;
             this.listaDeVenda = res.data.vendas;
         });
+    },
+    watch: {
+      pesquisa(event) {
+        const dados = {
+          filtro: event.filters.global.value !== null ? event.filters.global.value : '',
+          linhas: event.rows ? event.rows : 5,
+          pagina: event.page ? event.page : 0
+        };
+        VendaService.listarVenda(dados.linhas, dados.pagina).then((res) => {
+          this.listaDeVenda = res.data.vendas;
+          this.totalDePagina = res.data.totalPage;
+        });
+      },
     }
 };
 </script>
@@ -44,7 +58,7 @@ export default {
                         <span class="font-bold text-lg">Listagem de Vendas</span>
                     </div>
                 </template>
-                <Tabela :data="listaDeVenda" mostrar-paginacao="true">
+                <Tabela :data="listaDeVenda" paginacao="pesquisa" mostrar-paginacao="true">
                     <template #conteudo>
                         <Column field="dataVenda" header="Data da venda" :sortable="true">
                             <template #body="{ data }">
