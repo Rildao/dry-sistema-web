@@ -1,10 +1,11 @@
 <script>
 import { VendaService } from '@/service';
-import { formatarEnumVenda, formatarValorReal, formatarData} from "@/utils";
+import { formatarEnumVenda, formatarValorReal, formatarData, formatarEnumStatus } from "@/utils";
 
 
 export default {
     methods: {
+      formatarEnumStatus,
         formatarValorReal,
         formatarData,
         formatarEnumVenda,
@@ -43,7 +44,7 @@ export default {
                         <span class="font-bold text-lg">Listagem de Vendas</span>
                     </div>
                 </template>
-                <Tabela :data="listaDeVenda">
+                <Tabela :data="listaDeVenda" mostrar-paginacao="true">
                     <template #conteudo>
                         <Column field="dataVenda" header="Data da venda" :sortable="true">
                             <template #body="{ data }">
