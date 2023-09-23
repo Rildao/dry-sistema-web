@@ -34,7 +34,8 @@ export default {
                 { codigo: 'ANDAMENTO', nome: 'Andamento' }
             ],
             rotaClienteNovo: false,
-            rotaClienteEditar: false
+            rotaClienteEditar: false,
+            vendaSelecionada: null
         };
     },
     setup() {
@@ -46,10 +47,11 @@ export default {
         };
     },
     mounted() {
-        if (this.$route.params.id && this.$route.name === 'Cliente Editar') {
+        if (this.$route.params.id && this.$route.name == 'Cliente Editar') {
             this.rotaClienteEditar = true;
-            this.buscarClientePorId();
-        } else if (this.$route.name === 'Cliente Novo') {
+            this.id = this.$route.params.id;
+            this.buscarClientePorId(this.id);
+        } else if (this.$route.name == 'Cliente Novo') {
             this.rotaClienteNovo = true;
         }
     },
@@ -66,14 +68,12 @@ export default {
         formatarTelefone(telefone) {
             return telefone.replace('(', '').replace(')', '').replace('-', '').replace(' ', '');
         },
-        buscarClientePorId() {
+        buscarClientePorId(id) {
             this.$store.dispatch('addRequest');
-
-            ClienteService.buscarClientePorId(this.$route.params.id)
+            ClienteService.buscarClientePorId(id)
                 .then((res) => {
                     this.$store.dispatch('removeRequest');
                     if (res.success === true) {
-                        this.id = res.data.id;
                         this.nome = res.data.nome;
                         this.telefone = res.data.telefone;
                         this.endereco = res.data.endereco;
@@ -109,7 +109,6 @@ export default {
                 .then((res) => {
                     this.$store.dispatch('removeRequest');
                     if (res.success === true) {
-                        this.limparCamposCliente();
                         this.$router.push('/clientes/editar-cliente/' + res.data.id);
                         this.$toast.add({
                             severity: 'success',
@@ -131,7 +130,6 @@ export default {
                 .then((res) => {
                     this.$store.dispatch('removeRequest');
                     if (res.success === true) {
-                        this.limparCamposCliente();
                         this.$router.push('/clientes/editar-cliente/' + res.data.id);
                         this.$toast.add({
                             severity: 'success',
@@ -152,6 +150,7 @@ export default {
         },
         fecharModal() {
             this.limparCamposVenda();
+            this.vendaSelecionada = null;
             this.modal = false;
         },
         adicionarVenda() {
@@ -160,15 +159,6 @@ export default {
 
             this.modal = false;
             this.$toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Venda adicionada!', life: 3000 });
-        },
-        limparCamposCliente() {
-            this.cliente = {
-                nome: '',
-                telefone: '',
-                endereco: '',
-                cpf: '',
-                vendas: []
-            };
         },
         limparCamposVenda() {
             this.venda = {
@@ -216,7 +206,16 @@ export default {
     watch: {
         'venda.dataVenda'() {
             if (this.venda.dataVenda) {
-                this.venda.diaVencimentoLancamento = this.venda.dataVenda.getDate();
+                if (!this.venda.diaVencimentoLancamento) {
+                    this.venda.diaVencimentoLancamento = this.venda.dataVenda.getDate();
+                }
+            }
+        },
+        vendaSelecionada() {
+            if (this.vendaSelecionada) {
+                this.venda = this.vendaSelecionada;
+                // this.venda.dataVenda = this.$formatarData(this.venda.dataVenda, 'DD/MM/YYYY');
+                this.abrirModal();
             }
         }
     }
@@ -264,39 +263,45 @@ export default {
                         <span class="font-bold text-lg">Vendas</span>
                     </div>
                 </template>
-                <Tabela :data="vendas">
-                    <template #botoes>
-                        <Button icon="pi pi-plus" label="Adiconar Venda" @click.stop="abrirModal()" severity="primary" outlined />
+                <DataTable v-model:selection="vendaSelecionada" paginator :rows="5" :rowsPerPageOptions="[5, 10, 15]" :value="vendas" selectionMode="single" dataKey="id" :metaKeySelection="true">
+                    <template #header>
+                        <div class="table-header flex flex-column md:flex-row justify-content-between">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search" />
+                                <InputText v-model="pesquisa" placeholder="Pesquisar..." />
+                            </span>
+                            <div class="flex flex-column md:flex-row">
+                                <Button icon="pi pi-plus" label="Adiconar Venda" @click.stop="abrirModal()" severity="primary" outlined />
+                            </div>
+                        </div>
                     </template>
-
-                    <template #conteudo>
-                        <Column field="dataVenda" header="Data da Venda" :sortable="true">
-                            <template #body="slotProps">
-                                {{ $formatarData(slotProps.data.dataVenda, 'DD/MM/YYYY') }}
-                            </template>
-                        </Column>
-                        <Column field="statusVenda" header="Status" :sortable="true">
-                            <template #body="slotProps">
-                                <Tag :severity="severityStatus(slotProps.data.statusVenda)">{{ formatarEnumStatus(slotProps.data.statusVenda) }}</Tag>
-                            </template>
-                        </Column>
-                        <Column field="tipoVenda" header="Tipo da Venda" :sortable="true">
-                            <template #body="slotProps">
-                                {{ formatarEnumVenda(slotProps.data.tipoVenda) }}
-                            </template>
-                        </Column>
-                        <Column field="valorVenda" header="Valor da Venda" :sortable="true">
-                            <template #body="slotProps">
-                                {{ $formatarValorReal(slotProps.data.valorVenda) }}
-                            </template>
-                        </Column>
-                        <Column field="quantidadeParcelas" header="Quantidade de Parcelas" :sortable="true">
-                            <template #body="slotProps">
-                                {{ slotProps.data.quantidadeParcelas? slotProps.data.quantidadeParcelas : 0 }}
-                            </template>
-                        </Column>
-                    </template>
-                </Tabela>
+                    <Column field="dataVenda" header="Data da Venda" :sortable="true">
+                        <template #body="slotProps">
+                            <!-- {{ $formatarData(slotProps.data.dataVenda, 'DD/MM/YYYY') }} -->
+                            {{ slotProps.data.dataVenda }}
+                        </template>
+                    </Column>
+                    <Column field="statusVenda" header="Status" :sortable="true">
+                        <template #body="slotProps">
+                            <Tag :severity="severityStatus(slotProps.data.statusVenda)">{{ formatarEnumStatus(slotProps.data.statusVenda) }}</Tag>
+                        </template>
+                    </Column>
+                    <Column field="tipoVenda" header="Tipo da Venda" :sortable="true">
+                        <template #body="slotProps">
+                            {{ formatarEnumVenda(slotProps.data.tipoVenda) }}
+                        </template>
+                    </Column>
+                    <Column field="valorVenda" header="Valor da Venda" :sortable="true">
+                        <template #body="slotProps">
+                            {{ $formatarValorReal(slotProps.data.valorVenda) }}
+                        </template>
+                    </Column>
+                    <Column field="quantidadeParcelas" header="Quantidade de Parcelas" :sortable="true">
+                        <template #body="slotProps">
+                            {{ slotProps.data.quantidadeParcelas }}
+                        </template>
+                    </Column>
+                </DataTable>
             </Fieldset>
 
             <!-- Modal Vendas -->
@@ -321,9 +326,9 @@ export default {
 
                         <div class="field col-12 lg:col-4 md:col-4">
                             <label for="quantidadeParcelas">Quantidade de Parcelas</label>
-                            <InputNumber v-if="venda.tipoVenda === 'CREDIARIO'" id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" />
+                            <InputNumber v-if="venda.tipoVenda == 'CREDIARIO'" id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" />
 
-                            <InputNumber v-else id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" disabled />
+                            <InputNumber v-else id="quantidadeParcelas" class="w-full" inputId="minmax-buttons" mode="decimal" showButtons :min="0" disabled />
                         </div>
 
                         <div class="field col-12 lg:col-4 md:col-4">
@@ -338,7 +343,7 @@ export default {
 
                         <div class="field col-12 lg:col-4 md:col-4">
                             <label for="dataVencimentoLancamento">Dia de Vencimento do Pagamento</label>
-                            <InputNumber v-if="venda.tipoVenda === 'CREDIARIO'" id="dataVencimentoLancamento" class="w-full" v-model="venda.diaVencimentoLancamento" :min="1" :max="30" />
+                            <InputNumber v-if="venda.tipoVenda == 'CREDIARIO'" id="dataVencimentoLancamento" class="w-full" v-model="venda.diaVencimentoLancamento" :min="1" :max="30" />
                             <InputNumber v-else id="dataVencimentoLancamento" class="w-full" :min="1" :max="30" disabled />
                         </div>
 

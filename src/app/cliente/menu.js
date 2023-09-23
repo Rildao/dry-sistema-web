@@ -1,5 +1,5 @@
-import { novoClienteMenu } from '@/app/cliente/cadastroCliente/menu';
-import { listaClienteMenu } from "@/app/cliente/listaCliente/menu";
+import { novoClienteMenu } from '@/app/cliente/formCliente/menu';
+import { listaClienteMenu } from '@/app/cliente/listaCliente/menu';
 
 export const clienteMenu = {
     items: [
