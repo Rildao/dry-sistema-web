@@ -86,11 +86,12 @@ export default {
     },
     methods: {
         usuarioLogado() {
-            const atuenticado = validarToken(localStorage.getItem('token'));
-            if (!atuenticado) {
-                localStorage.removeItem('token');
-                this.$router.push('/login');
-            }
+            validarToken(localStorage.getItem('token')).then((res) => {
+                if (!res) {
+                    localStorage.removeItem('token');
+                    this.$router.push('/login');
+                }
+            });
         }
     }
 };

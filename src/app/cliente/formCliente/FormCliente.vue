@@ -279,8 +279,7 @@ export default {
                     </template>
                     <Column field="dataVenda" header="Data da Venda" :sortable="true">
                         <template #body="slotProps">
-                            <!-- {{ $formatarData(slotProps.data.dataVenda, 'DD/MM/YYYY') }} -->
-                            {{ slotProps.data.dataVenda }}
+                            {{ $formatarData(slotProps.data.dataVenda, 'DD/MM/YYYY') }}
                         </template>
                     </Column>
                     <Column field="statusVenda" header="Status" :sortable="true">
@@ -339,7 +338,7 @@ export default {
 
                         <div class="field col-12 lg:col-4 md:col-4">
                             <label for="dataVenda">Data da Venda</label>
-                            <Calendar id="dataVenda" class="w-full" v-model="venda.dataVenda" showIcon placeholder="dd/mm/aaaa" />
+                            <Calendar id="dataVenda" class="w-full" v-model="venda.dataVenda" showIcon placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" />
                         </div>
 
                         <div class="field col-12 lg:col-4 md:col-4">
