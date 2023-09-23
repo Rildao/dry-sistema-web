@@ -55,7 +55,7 @@ export default {
             this.$router.push('/vendas');
         },
         redirectClientes() {
-            this.$router.push('/clientes/lista-cliente');
+            this.$router.push('/clientes');
         },
         mouseOver() {
             this.isHovered = true;

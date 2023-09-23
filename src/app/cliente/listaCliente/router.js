@@ -1,5 +1,5 @@
 export const listaClienteRota = {
-    path: '/clientes/lista-cliente',
+    path: '/clientes',
     name: 'lista de cliente',
     component: () => import('./ListaCliente.vue')
 };
