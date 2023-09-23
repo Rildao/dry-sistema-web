@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { ClienteService } from '@/service';
-import { FilterMatchMode } from "primevue/api";
+import { FilterMatchMode } from 'primevue/api';
 
 export default {
     data() {
@@ -52,11 +52,11 @@ export default {
         };
     },
     mounted() {
-        if (this.$route.params.id && this.$route.name == 'Cliente Editar') {
+        if (this.$route.params.id && this.$route.name === 'Cliente Editar') {
             this.rotaClienteEditar = true;
             this.id = this.$route.params.id;
             this.buscarClientePorId(this.id);
-        } else if (this.$route.name == 'Cliente Novo') {
+        } else if (this.$route.name === 'Cliente Novo') {
             this.rotaClienteNovo = true;
         }
     },
@@ -258,7 +258,6 @@ export default {
                 </div>
             </Fieldset>
 
-
             <Fieldset class="mt-5">
                 <template #legend>
                     <div class="flex align-items-center text-primary">
@@ -307,7 +306,7 @@ export default {
                 </DataTable>
             </Fieldset>
 
-            <Dialog v-model:visible="modal" modal :closable="false" :style="{ width: '50vw' }">
+            <Dialog v-model:visible="modal" modal :closable="false" :style="{ width: '85%' }">
                 <Fieldset>
                     <template #legend>
                         <div class="flex align-items-center text-primary">
@@ -327,8 +326,8 @@ export default {
                         </div>
 
                         <div class="field col-12 lg:col-4 md:col-4">
-                            <label for="quantidadeParcelas">Quantidade de Parcelas</label>
-                            <InputNumber v-if="venda.tipoVenda == 'CREDIARIO'" id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" />
+                            <label for="quantidadeParcelas">Quant. de Parcelas</label>
+                            <InputNumber v-if="venda.tipoVenda === 'CREDIARIO'" id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" />
 
                             <InputNumber v-else id="quantidadeParcelas" class="w-full" inputId="minmax-buttons" mode="decimal" showButtons :min="0" disabled />
                         </div>
@@ -344,8 +343,8 @@ export default {
                         </div>
 
                         <div class="field col-12 lg:col-4 md:col-4">
-                            <label for="dataVencimentoLancamento">Dia de Vencimento do Pagamento</label>
-                            <InputNumber v-if="venda.tipoVenda == 'CREDIARIO'" id="dataVencimentoLancamento" class="w-full" v-model="venda.diaVencimentoLancamento" :min="1" :max="30" />
+                            <label for="dataVencimentoLancamento">Dia de Venc. do Pagamento</label>
+                            <InputNumber v-if="venda.tipoVenda === 'CREDIARIO'" id="dataVencimentoLancamento" class="w-full" v-model="venda.diaVencimentoLancamento" :min="1" :max="30" />
                             <InputNumber v-else id="dataVencimentoLancamento" class="w-full" :min="1" :max="30" disabled />
                         </div>
 
@@ -363,12 +362,11 @@ export default {
                             </Editor>
                         </div>
                     </div>
+                    <div class="flex justify-content-end">
+                        <Button label="Voltar" icon="pi pi-times" @click="fecharModal()" text />
+                        <Button label="Adicionar" icon="pi pi-plus" @click="adicionarVenda()" autofocus />
+                    </div>
                 </Fieldset>
-
-                <template #footer>
-                    <Button label="Voltar" icon="pi pi-times" @click="fecharModal()" text />
-                    <Button label="Adicionar" icon="pi pi-plus" @click="adicionarVenda()" autofocus />
-                </template>
             </Dialog>
 
             <div class="flex align-items-center text-primary mt-4 justify-content-end">

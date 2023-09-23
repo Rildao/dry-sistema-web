@@ -5,7 +5,7 @@ export const vendaMenu = {
         {
             label: 'Vendas',
             icon: 'pi pi-shopping-cart',
-            to: '/vendas/lista-venda'
+            to: '/vendas'
             // items: [listaVendaMenu]
         }
     ]
