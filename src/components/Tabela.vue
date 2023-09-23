@@ -19,7 +19,10 @@ export default {
             type: Boolean,
             default: () => true
         },
-
+        paginacao: {
+            type: Function,
+            default: () => null
+        },
         filtersProp: {
             type: Object,
             default: () => null
@@ -96,6 +99,7 @@ export default {
         :rowHover="true"
         :rowClass="() => classeLinha"
         v-model:filters="filters"
+        @page="paginacao"
         :meta-key-selection="true"
         :autoLayout="true"
         :globalFilterFields="globalFilterFields"

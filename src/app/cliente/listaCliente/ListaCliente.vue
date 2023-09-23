@@ -15,13 +15,24 @@ export default {
             first: null,
             totalDePagina: null,
             pagina: 0,
-            totalDeElementos: null,
-            pesquisa: ''
+            linha:0,
+            totalDeElementos: null
         };
     },
     methods: {
         maskCPF,
-        maskTelefone
+        maskTelefone,
+        pesquisa(event) {
+            const dados = {
+                filtro: event.filters.global.value !== null ? event.filters.global.value : '',
+                linhas: this.linha,
+                pagina: this.pagina
+            };
+            ClienteService.listarCliente(dados.filtro, dados.linhas, dados.pagina).then((res) => {
+                this.listaDeCliente = res.data.clientes;
+                this.totalDePagina = res.data.totalPage;
+            });
+        }
     },
     mounted() {
         ClienteService.listarCliente().then((res) => {
@@ -32,28 +43,6 @@ export default {
     watch: {
         clienteSelecionado() {
             this.$router.push(`/clientes/editar-cliente/${this.clienteSelecionado.id}`);
-        },
-        pesquisa(event) {
-            const dados = {
-                filtro: event.filters.global.value !== null ? event.filters.global.value : '',
-                linhas: event.rows ? event.rows : 5,
-                pagina: event.page ? event.page : 0
-            };
-            ClienteService.listarCliente(dados.filtro, dados.linhas, dados.pagina).then((res) => {
-                this.listaDeCliente = res.data.clientes;
-                this.totalDePagina = res.data.totalPage;
-            });
-        },
-        watch: {
-            clienteSelecionado() {
-                let route = this.$router.resolve(`/clientes/editar-cliente/${this.clienteSelecionado.id}`);
-                window.open(route.href, '_blank');
-            }
-            // pesquisa() {
-            //     ClienteService.listarCliente(this.pesquisa).then((res) => {
-            //         this.listaDeCliente = res.data.clientes;
-            //     });
-            // }
         }
     }
 };
@@ -65,7 +54,7 @@ export default {
                 <template #legend>
                     <div class="flex align-items-center text-primary">
                         <span class="pi pi-users mr-2"></span>
-                        <span class="font-bold text-lg">Listagem de Clientes</span>
+                        <span class="font-bold text-lg">Clientes</span>
                     </div>
                 </template>
                 <DataTable
