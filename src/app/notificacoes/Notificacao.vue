@@ -15,10 +15,7 @@ export default {
         };
     },
     mounted() {
-        this.$store.dispatch('addRequest');
-        Promise.all([this.buscarNotificacoesNovas(), this.buscarNotificacoesVistas()]).finally(() => {
-            this.$store.dispatch('removeRequest');
-        });
+        Promise.all([this.buscarNotificacoesNovas(), this.buscarNotificacoesVistas()]);
     },
     methods: {
         marcarComoVisto(notificacao) {
@@ -42,17 +39,28 @@ export default {
         },
 
         buscarNotificacoesVistas() {
-            NotificacaoService.listarNotificacao('', 10, 0, true).then(({ data }) => {
-                this.notificacoesVistas = data.notificacoes;
-                this.quantidadeVistas = data.totalElements;
-            });
+            this.$store.dispatch('addRequest');
+            NotificacaoService.listarNotificacao('', 10, 0, true)
+                .then(({ data }) => {
+                    this.notificacoesVistas = data.notificacoes;
+                    this.quantidadeVistas = data.totalElements;
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
         },
 
         buscarNotificacoesNovas() {
-            NotificacaoService.listarNotificacao().then(({ data }) => {
-                this.notificacoes = data.notificacoes;
-                this.quantidadeNaoVistas = data.totalElements;
-            });
+            this.$store.dispatch('addRequest');
+
+            NotificacaoService.listarNotificacao()
+                .then(({ data }) => {
+                    this.notificacoes = data.notificacoes;
+                    this.quantidadeNaoVistas = data.totalElements;
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
         }
     }
 };
@@ -109,5 +117,3 @@ export default {
         </Fieldset>
     </div>
 </template>
-
-<style></style>

@@ -11,7 +11,7 @@ export default {
             outsideClickListener: { value: null },
             topbarMenuActive: { value: false },
             quantidadeNotificacoes: 0,
-
+            openModal: false,
             items: [
                 // {
                 //     label: 'Opções',
@@ -97,12 +97,19 @@ export default {
             this.atualizarQuantidadeNotificacoes().then(({ data }) => {
                 this.quantidadeNotificacoes = data;
                 if (this.quantidadeNotificacoes > 0) {
-                    this.$toast.add({ severity: 'warn', summary: 'Notificações', detail: `${this.quantidadeNotificacoes} não lidas!` });
+                    this.openModal = true;
                 }
             });
         },
         redirectNotificacoes() {
+            this.openModal = false;
             this.$router.push('/notificacoes');
+        },
+        fecharModal() {
+            this.openModal = false;
+        },
+        textoAlerta() {
+            return this.quantidadeNotificacoes > 1 ? 'novas notificações não lidas' : 'nova notificação não lida';
         }
     }
 };
@@ -130,4 +137,18 @@ export default {
             </Button>
         </div>
     </div>
+    <Dialog v-model:visible="openModal" modal :closable="false" :style="{ width: '35vw' }">
+        <div class="text-center">
+            <i class="pi pi-exclamation-triangle text-orange-400" style="font-size: 4rem"></i>
+            <div class="font-bold text-xl my-3">
+                Olá! Você possui '<b class="font-bold text-primary">{{ quantidadeNotificacoes }}</b
+                >' {{ textoAlerta() }}. Deseja ir para a tela de notificações?
+            </div>
+        </div>
+
+        <template #footer>
+            <Button label="Não" icon="pi pi-times" @click="fecharModal()" text />
+            <Button label="Sim" @click="redirectNotificacoes()" autofocus />
+        </template>
+    </Dialog>
 </template>

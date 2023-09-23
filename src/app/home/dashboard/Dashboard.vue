@@ -19,23 +19,14 @@ export default {
             },
             lineOptions: null,
             lineData: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
                 datasets: [
                     {
-                        label: 'First Dataset',
-                        data: [65, 59, 80, 81, 56, 55, 40],
+                        label: '2023',
+                        data: [65, 59, 80, 81, 56, 55, 40, 60, 55, 40, 60, 55],
                         fill: false,
                         backgroundColor: '#2f4860',
                         borderColor: '#2f4860',
-                        tension: 0.4
-                    },
-
-                    {
-                        label: 'Second Dataset',
-                        data: [28, 48, 40, 19, 86, 27, 90],
-                        fill: false,
-                        backgroundColor: '#3b82f6',
-                        borderColor: '#3b82f6',
                         tension: 0.4
                     }
                 ]
@@ -126,6 +117,19 @@ export default {
                 <span class="text-500">Valor total de vendas no crediario</span>
             </div>
         </div>
+
+        <div class="col-12 xl:col-6">
+            <div class="card">
+                <h5>Vendas Por Mês</h5>
+                <Chart type="bar" :data="lineData" :options="lineOptions" />
+            </div>
+        </div>
+        <!-- <div class="col-12 xl:col-6">
+            <div class="card">
+                <h5>Sales Overview</h5>
+                <Chart type="line" :data="lineData" :options="lineOptions" />
+            </div>
+        </div> -->
     </div>
 </template>
 
