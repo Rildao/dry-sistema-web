@@ -2,6 +2,7 @@
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { ClienteService } from '@/service';
+import { FilterMatchMode } from "primevue/api";
 
 export default {
     data() {
@@ -35,7 +36,10 @@ export default {
             ],
             rotaClienteNovo: false,
             rotaClienteEditar: false,
-            vendaSelecionada: null
+            vendaSelecionada: null,
+            filters: {
+                global: { value: '', matchMode: FilterMatchMode.CONTAINS }
+            }
         };
     },
     setup() {
@@ -43,7 +47,8 @@ export default {
     },
     validations() {
         return {
-            nome: { required }
+            nome: { required },
+            cpf: { required }
         };
     },
     mounted() {
@@ -239,8 +244,8 @@ export default {
                         <small class="p-error mb-3" v-if="nome !== null && v$.nome.$error">Nome é obrigatório</small>
                     </div>
                     <div class="field col-12 lg:col-3 md:col-3">
-                        <label for="cpf">CPF</label>
-                        <InputMask id="cpf" class="w-full" v-model="cpf" type="text" mask="999.999.999-99" placeholder="999.999.999-99" />
+                        <label for="cpf">CPF*</label>
+                        <InputMask id="cpf" @input="v$.cpf.$touch()" :class="{ 'p-invalid': cpf !== null && v$.cpf.$error }" class="w-full" v-model="cpf" type="text" mask="999.999.999-99" placeholder="999.999.999-99" />
                     </div>
                     <div class="field col-12 lg:col-3 md:col-3">
                         <label for="telefone">Telefone</label>
@@ -253,22 +258,20 @@ export default {
                 </div>
             </Fieldset>
 
-            <br />
 
-            <!-- Listagem Vendas -->
-            <Fieldset>
+            <Fieldset class="mt-5">
                 <template #legend>
                     <div class="flex align-items-center text-primary">
                         <span class="pi pi-shopping-cart mr-2"></span>
                         <span class="font-bold text-lg">Vendas</span>
                     </div>
                 </template>
-                <DataTable v-model:selection="vendaSelecionada" paginator :rows="5" :rowsPerPageOptions="[5, 10, 15]" :value="vendas" selectionMode="single" dataKey="id" :metaKeySelection="true">
+                <DataTable v-model:filters="filters" v-model:selection="vendaSelecionada" paginator :rows="5" :rowsPerPageOptions="[5, 10, 15]" :value="vendas" selectionMode="single" dataKey="id" :metaKeySelection="true">
                     <template #header>
                         <div class="table-header flex flex-column md:flex-row justify-content-between">
                             <span class="p-input-icon-left">
                                 <i class="pi pi-search" />
-                                <InputText v-model="pesquisa" placeholder="Pesquisar..." />
+                                <InputText v-model="filters['global'].value" placeholder="Pesquisar..." />
                             </span>
                             <div class="flex flex-column md:flex-row">
                                 <Button icon="pi pi-plus" label="Adiconar Venda" @click.stop="abrirModal()" severity="primary" outlined />
@@ -304,7 +307,6 @@ export default {
                 </DataTable>
             </Fieldset>
 
-            <!-- Modal Vendas -->
             <Dialog v-model:visible="modal" modal :closable="false" :style="{ width: '50vw' }">
                 <Fieldset>
                     <template #legend>
@@ -369,9 +371,7 @@ export default {
                 </template>
             </Dialog>
 
-            <br />
-
-            <div class="flex align-items-center text-primary justify-content-end">
+            <div class="flex align-items-center text-primary mt-4 justify-content-end">
                 <Button label="Primary" class="w-full lg:w-2 justify-content-center" @click.stop="cadastrar()">Cadastrar </Button>
             </div>
         </template>
