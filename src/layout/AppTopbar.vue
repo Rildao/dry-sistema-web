@@ -2,12 +2,15 @@
 import { axiosJwt } from '@/service/axiosJwt';
 import { useLayout } from '@/layout/composables/layout';
 const { onMenuToggle } = useLayout();
-import { apiUrl } from '@/service';
+import { apiUrl, NotificacaoService } from '@/service';
+import { EventBus } from '@/service/EventBus';
+
 export default {
     data() {
         return {
             outsideClickListener: { value: null },
             topbarMenuActive: { value: false },
+            quantidadeNotificacoes: 0,
 
             items: [
                 // {
@@ -25,6 +28,14 @@ export default {
     },
     mounted() {
         this.bindOutsideClickListener();
+        this.buscarQuantidadeNotificacoesNaoLidas();
+    },
+    created() {
+        EventBus.on('notificacao', () => {
+            this.atualizarQuantidadeNotificacoes().then(({ data }) => {
+                this.quantidadeNotificacoes = data;
+            });
+        });
     },
     beforeMount() {
         this.unbindOutsideClickListener();
@@ -77,6 +88,19 @@ export default {
         toggle(event) {
             this.$refs.menu.toggle(event);
         },
+
+        atualizarQuantidadeNotificacoes() {
+            return NotificacaoService.buscarQuantidadeNotificacoesNaoLidas();
+        },
+
+        buscarQuantidadeNotificacoesNaoLidas() {
+            this.atualizarQuantidadeNotificacoes().then(({ data }) => {
+                this.quantidadeNotificacoes = data;
+                if (this.quantidadeNotificacoes > 0) {
+                    this.$toast.add({ severity: 'warn', summary: 'Notificações', detail: `${this.quantidadeNotificacoes} não lidas!` });
+                }
+            });
+        },
         redirectNotificacoes() {
             this.$router.push('/notificacoes');
         }
@@ -96,7 +120,7 @@ export default {
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <Button @click="redirectNotificacoes()" class="p-link layout-topbar-button" v-tooltip.bottom="'Notificação'">
-                <i v-badge="1" class="pi pi-bell p-overlay-badge" />
+                <i v-badge="quantidadeNotificacoes" class="pi pi-bell p-overlay-badge" />
                 <span class="span">Notificação</span>
             </Button>
 
