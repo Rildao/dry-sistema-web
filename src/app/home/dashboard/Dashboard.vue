@@ -52,7 +52,7 @@ export default {
             });
         },
         redirectVendas() {
-            this.$router.push('/vendas');
+            this.$router.push('/vendas/lista-venda');
         },
         redirectClientes() {
             this.$router.push('/clientes/lista-cliente');

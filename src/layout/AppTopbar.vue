@@ -95,24 +95,15 @@ export default {
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <Button @click="redirectNotificacoes()" class="p-link layout-topbar-button">
+            <Button @click="redirectNotificacoes()" class="p-link layout-topbar-button" v-tooltip.bottom="'Notificação'">
                 <i v-badge="1" class="pi pi-bell p-overlay-badge" />
                 <span class="span">Notificação</span>
             </Button>
 
-            <button class="p-link layout-topbar-button" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu">
-                <i class="pi pi-user"></i>
-                <span class="span">Perfil</span>
-
-                <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
-                    <template #end>
-                        <button class="w-full p-link flex align-items-center p-2 pl-4 text-color hover:surface-200 border-noround" @click="logout()">
-                            <i class="pi pi-sign-out" />
-                            <span class="ml-2">Sair</span>
-                        </button>
-                    </template>
-                </Menu>
-            </button>
+            <Button @click="logout()" class="p-link layout-topbar-button" v-tooltip.bottom="'Sair'">
+                <i class="pi pi-sign-out" />
+                <span class="span">Sair</span>
+            </Button>
         </div>
     </div>
 </template>
