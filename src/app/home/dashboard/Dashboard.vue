@@ -66,7 +66,7 @@ export default {
 
 <template>
     <div class="grid">
-        <div class="col-12 lg:col-8 xl:col-4">
+        <div class="col-12 xl:col-4">
             <div class="card mb-0 div-clicavel" @mouseover="mouseOver" @mouseleave="mouseLeave" :class="{ 'dark-overlay': isHovered }" @click="redirectVendas">
                 <div class="flex justify-content-between mb-3">
                     <div>
@@ -83,7 +83,7 @@ export default {
                 <span class="text-500">Total de vendas no mês</span>
             </div>
         </div>
-        <div class="col-12 lg:col-8 xl:col-4">
+        <div class="col-12  xl:col-4">
             <div class="card mb-0 div-clicavel" @mouseover="mouseOver1" @mouseleave="mouseLeave1" :class="{ 'dark-overlay': isHovered1 }" @click="redirectClientes">
                 <div class="flex justify-content-between mb-3">
                     <div>
@@ -100,7 +100,7 @@ export default {
                 <span class="text-500">Total de Clientes</span>
             </div>
         </div>
-        <div class="col-12 lg:col-8 xl:col-4">
+        <div class="col-12  xl:col-4">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
@@ -118,18 +118,12 @@ export default {
             </div>
         </div>
 
-        <div class="col-12 xl:col-6">
+        <div class="col-12  xl:col-6">
             <div class="card">
                 <h5>Vendas Por Mês</h5>
                 <Chart type="bar" :data="lineData" :options="lineOptions" />
             </div>
         </div>
-        <!-- <div class="col-12 xl:col-6">
-            <div class="card">
-                <h5>Sales Overview</h5>
-                <Chart type="line" :data="lineData" :options="lineOptions" />
-            </div>
-        </div> -->
     </div>
 </template>
 
