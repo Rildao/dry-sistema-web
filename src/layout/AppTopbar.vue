@@ -147,8 +147,8 @@ export default {
           </div>
       <template #footer>
         <div class="flex justify-content-between xl:justify-content-end">
-          <Button label="Não" @click="fecharModal()" severity="danger"  />
-          <Button label="Sim" @click="redirectNotificacoes()" severity="info"  />
+          <Button label="Não" @click="fecharModal()" text/>
+          <Button label="Sim" @click="redirectNotificacoes()" autofoucus  />
         </div>
       </template>
 
