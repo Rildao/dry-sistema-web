@@ -15,7 +15,7 @@ export default {
         };
     },
     mounted() {
-        Promise.all([this.buscarNotificacoesNovas, this.buscarNotificacoesVistas]);
+        Promise.all([this.buscarNotificacoesNovas(), this.buscarNotificacoesVistas()]);
     },
     methods: {
         marcarComoVisto(notificacao) {
