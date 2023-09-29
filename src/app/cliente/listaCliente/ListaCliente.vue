@@ -48,8 +48,7 @@ export default {
 };
 </script>
 <template>
-    <Card>
-        <template #content>
+    <div class="card">
             <Fieldset>
                 <template #legend>
                     <div class="flex align-items-center text-primary">
@@ -95,7 +94,5 @@ export default {
                     </Column>
                 </DataTable>
             </Fieldset>
-        </template>
-    </Card>
+    </div>
 </template>
-<style></style>
