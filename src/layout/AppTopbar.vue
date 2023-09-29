@@ -141,7 +141,7 @@ export default {
           <div class="text-center">
             <i class="pi pi-exclamation-triangle text-orange-400 text-7xl"></i>
             <div class="font-bold text-xl my-3">
-            Você possui '<b class="font-bold text-primary">{{ quantidadeNotificacoes }}</b
+             Olá, Você possui '<b class="font-bold text-primary">{{ quantidadeNotificacoes }}</b
             >' {{ textoAlerta() }}. Deseja ir para a tela de notificações?
             </div>
           </div>

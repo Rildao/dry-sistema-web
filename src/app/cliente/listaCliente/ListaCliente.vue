@@ -73,12 +73,12 @@ export default {
                     selectionMode="single"
                     dataKey="id"
                     :metaKeySelection="true"
-                >
+                    >
                     <template #header>
-                        <div class="table-header flex flex-column md:flex-row justify-content-between">
-                            <span class="p-input-icon-left">
+                        <div class="w-12">
+                            <span class="w-5 p-input-icon-left">
                                 <i class="pi pi-search" />
-                                <InputText v-model="filters['global'].value" placeholder="Pesquisar..." />
+                                <InputText class="w-12" v-model="filters['global'].value" placeholder="Pesquise pelo nome ou CPF" />
                             </span>
                         </div>
                     </template>
