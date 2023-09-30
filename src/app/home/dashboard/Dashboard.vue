@@ -105,8 +105,8 @@ export default {
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Faturamento</span>
-                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalValorCrediario === '0' ? true : '' || painelAdministrativo.totalValorCrediario">
-                            {{ $formatarValorReal(painelAdministrativo.totalValorCrediario) }}
+                        <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalValorFaturado === '0' ? true : '' || painelAdministrativo.totalValorFaturado">
+                            {{ $formatarValorReal(painelAdministrativo.totalValorFaturado) }}
                         </div>
                         <Skeleton width="5rem" class="mb-2" v-else></Skeleton>
                     </div>
