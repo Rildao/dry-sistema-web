@@ -83,7 +83,7 @@ export default {
                 <span class="text-500">Total de vendas no mês</span>
             </div>
         </div>
-        <div class="col-12  xl:col-4">
+        <div class="col-12 xl:col-4">
             <div class="card mb-0 div-clicavel" @mouseover="mouseOver1" @mouseleave="mouseLeave1" :class="{ 'dark-overlay': isHovered1 }" @click="redirectClientes">
                 <div class="flex justify-content-between mb-3">
                     <div>
@@ -100,7 +100,7 @@ export default {
                 <span class="text-500">Total de Clientes</span>
             </div>
         </div>
-        <div class="col-12  xl:col-4">
+        <div class="col-12 xl:col-4">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
@@ -118,7 +118,7 @@ export default {
             </div>
         </div>
 
-        <div class="col-12  xl:col-6">
+        <div class="col-12 xl:col-6">
             <div class="card">
                 <h5>Vendas Por Mês</h5>
                 <Chart type="bar" :data="lineData" :options="lineOptions" />
