@@ -171,7 +171,6 @@ export default {
         },
         adicionarOuAtualizaVenda() {
             this.venda.cliente.id = this.$route.params.id;
-            this.venda.statusVenda = 'ANDAMENTO';
 
             if (this.venda.id) {
                 this.atualizarVenda(this.venda);

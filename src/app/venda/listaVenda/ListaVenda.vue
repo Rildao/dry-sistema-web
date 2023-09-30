@@ -20,12 +20,12 @@ export default {
             }
         },
         pesquisa(event) {
-            console.log(event);
             const dados = {
                 filtro: event.filters.global.value !== null ? event.filters.global.value : '',
-                linhas:this.linha,
+                linhas: this.linha,
                 pagina: this.pagina
             };
+
             VendaService.listarVenda(dados.linhas, dados.pagina).then((res) => {
                 this.listaDeVenda = res.data.vendas;
                 this.totalDePagina = res.data.totalPage;
@@ -48,11 +48,16 @@ export default {
         };
     },
     mounted() {
-        VendaService.listarVenda().then((res) => {
-            this.listaDeVenda = res.data.vendas;
-            this.totalDeElementos = res.data.totalElements;
-            this.totalDePagina = res.data.totalPage;
-        });
+        this.$store.dispatch('addRequest');
+        VendaService.listarVenda()
+            .then((res) => {
+                this.listaDeVenda = res.data.vendas;
+                this.totalDeElementos = res.data.totalElements;
+                this.totalDePagina = res.data.totalPage;
+            })
+            .finally(() => {
+                this.$store.dispatch('removeRequest');
+            });
     }
 };
 </script>

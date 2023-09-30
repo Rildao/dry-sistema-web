@@ -137,20 +137,19 @@ export default {
             </Button>
         </div>
     </div>
-    <Dialog v-model:visible="openModal" modal :header="Notificacao"  :style="{ width: '50%' }" :closable="false"  >
-          <div class="text-center">
+    <Dialog v-model:visible="openModal" modal :header="Notificacao" :style="{ width: '50%' }" :closable="false">
+        <div class="text-center">
             <i class="pi pi-exclamation-triangle text-orange-400 text-7xl"></i>
             <div class="font-bold text-xl my-3">
-             Olá, Você possui '<b class="font-bold text-primary">{{ quantidadeNotificacoes }}</b
-            >' {{ textoAlerta() }}. Deseja ir para a tela de notificações?
+                Olá, Você possui '<b class="font-bold text-primary">{{ quantidadeNotificacoes }}</b
+                >' {{ textoAlerta() }}. Deseja ir para a tela de notificações?
             </div>
-          </div>
-      <template #footer>
-        <div class="flex justify-content-between xl:justify-content-end">
-          <Button label="Não" @click="fecharModal()" text/>
-          <Button label="Sim" @click="redirectNotificacoes()" autofoucus  />
         </div>
-      </template>
-
+        <template #footer>
+            <div class="flex justify-content-between xl:justify-content-end">
+                <Button label="Não" @click="fecharModal()" text />
+                <Button label="Sim" @click="redirectNotificacoes()" autofoucus />
+            </div>
+        </template>
     </Dialog>
 </template>
