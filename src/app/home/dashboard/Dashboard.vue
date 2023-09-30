@@ -80,7 +80,7 @@ export default {
                         <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
                     </div>
                 </div>
-                <span class="text-500">Total de vendas no mês</span>
+                <span class="text-500">Total de vendas</span>
             </div>
         </div>
         <div class="col-12 xl:col-4">
@@ -104,7 +104,7 @@ export default {
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
-                        <span class="block text-500 font-medium mb-3">Valor Crediario</span>
+                        <span class="block text-500 font-medium mb-3">Faturamento</span>
                         <div class="text-900 font-medium text-xl" v-if="painelAdministrativo.totalValorCrediario === '0' ? true : '' || painelAdministrativo.totalValorCrediario">
                             {{ $formatarValorReal(painelAdministrativo.totalValorCrediario) }}
                         </div>
@@ -114,7 +114,7 @@ export default {
                         <i class="pi pi-dollar text-green-500 text-xl"></i>
                     </div>
                 </div>
-                <span class="text-500">Valor total de vendas no crediario</span>
+                <span class="text-500">Valor total faturado</span>
             </div>
         </div>
 

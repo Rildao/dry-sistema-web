@@ -121,6 +121,10 @@ export default {
             <i class="pi pi-bars"></i>
         </button>
 
+        <router-link to="/" class="p-link layout-topbar-logo">
+            <img id="topbar-logo" src="/demo/images/login/login.png" alt="dry-logo" style="height: 55px" />
+        </router-link>
+
         <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
             <i class="pi pi-ellipsis-v"></i>
         </button>

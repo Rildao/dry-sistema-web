@@ -42,6 +42,7 @@ export default {
             this.$store.dispatch('addRequest');
             NotificacaoService.listarNotificacao('', 10, 0, true)
                 .then(({ data }) => {
+                    console.log(data);
                     this.notificacoesVistas = data.notificacoes;
                     this.quantidadeVistas = data.totalElements;
                 })
@@ -52,7 +53,6 @@ export default {
 
         buscarNotificacoesNovas() {
             this.$store.dispatch('addRequest');
-
             NotificacaoService.listarNotificacao()
                 .then(({ data }) => {
                     this.notificacoes = data.notificacoes;
@@ -61,6 +61,29 @@ export default {
                 .finally(() => {
                     this.$store.dispatch('removeRequest');
                 });
+        },
+
+        severityStatus(status) {
+            switch (status) {
+                case 'ATRASO':
+                    return 'danger';
+                case 'ALERTA':
+                    return 'warning';
+            }
+        },
+
+        formatarEnumNotificacao(tipoNotificacao) {
+            switch (tipoNotificacao) {
+                case 'ATRASO':
+                    return 'Atraso';
+                case 'ALERTA':
+                    return 'Alerta';
+            }
+        }
+    },
+    watch: {
+        notificacaoSelecionada() {
+            this.$router.push(`/clientes/editar-cliente/${this.notificacaoSelecionada.venda.cliente.id}`);
         }
     }
 };
@@ -104,10 +127,27 @@ export default {
                 </div>
 
                 <div class="w-full md:w-9 xl:w-10 xl:p-3">
-                    <DataTable v-model:selection="notificacaoSelecionada" paginator :rows="5" :rowsPerPageOptions="[5, 10, 15]" :value="novasSelecionada ? notificacoes : notificacoesVistas" dataKey="id" tableStyle="min-width: 50%">
+                    <DataTable
+                        v-model:selection="notificacaoSelecionada"
+                        :metaKeySelection="true"
+                        paginator
+                        :rows="5"
+                        :rowsPerPageOptions="[5, 10, 15]"
+                        :value="novasSelecionada ? notificacoes : notificacoesVistas"
+                        dataKey="id"
+                        tableStyle="min-width: 50%"
+                        selectionMode="single"
+                    >
                         <Column headerStyle="width: 5rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
                             <template #body="{ data }">
                                 <Button v-if="novasSelecionada" type="button" text rounded icon="pi pi-bookmark" @click="marcarComoVisto(data)" v-tooltip.bottom="'Marcar como visto'" />
+                            </template>
+                        </Column>
+                        <Column field="tipoNotificacao" :class="`${novasSelecionada ? 'font-bold' : ''}`">
+                            <template #body="{ data }">
+                                <Tag :severity="severityStatus(data.tipoNotificacao)">
+                                    {{ formatarEnumNotificacao(data.tipoNotificacao) }}
+                                </Tag>
                             </template>
                         </Column>
                         <Column field="mensagem" :class="`${novasSelecionada ? 'font-bold' : ''}`"></Column>
