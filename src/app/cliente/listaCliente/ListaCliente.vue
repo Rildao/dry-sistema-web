@@ -137,7 +137,7 @@ export default {
                             <InputText class="w-12" v-model="filters['global'].value" placeholder="Pesquise pelo nome ou CPF" />
                         </span>
                         <div class="flex flex-column md:flex-row">
-                            <Button label="Baixar" icon="pi pi-file-excel" severity="success" outlined v-tooltip="`Exportar tabela para Excel'.`" @click="exportCSV($event)" />
+                            <Button label="Baixar" icon="pi pi-file-excel" severity="success" outlined v-tooltip="`Exportar tabela para Excel.`" @click="exportCSV($event)" />
                         </div>
                     </div>
                 </template>
