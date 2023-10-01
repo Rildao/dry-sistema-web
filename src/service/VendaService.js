@@ -15,5 +15,8 @@ export const VendaService = {
     },
     atualizarVenda(venda) {
         return axiosJwt.put(urlBase + '/' + venda.id, venda);
+    },
+    listarVendaCsv() {
+        return axiosJwt.get(urlBase + `/csv`);
     }
 };
