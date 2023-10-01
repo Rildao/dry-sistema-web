@@ -22,7 +22,7 @@ export default {
                 labels: [],
                 datasets: [
                     {
-                        label: 'Crédiario',
+                        label: 'Crediário',
                         data: [],
                         fill: false,
                         backgroundColor: 'rgba(0, 128, 0, 0.6)',
@@ -60,7 +60,7 @@ export default {
                 labels: [],
                 datasets: [
                     {
-                        label: 'Crédiario',
+                        label: 'Crediário',
                         data: [],
                         fill: false,
                         backgroundColor: 'rgba(54, 162, 235, 0.6)',
