@@ -15,5 +15,8 @@ export const ClienteService = {
     },
     buscarClientePorId(id) {
         return axiosJwt.get(urlBase + '/' + id);
-    }
+    }, 
+    listarClienteCsv() {
+        return axiosJwt.get(urlBase + '/csv');
+    },
 };
