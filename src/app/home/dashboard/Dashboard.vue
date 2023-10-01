@@ -17,8 +17,46 @@ export default {
             products: {
                 value: null
             },
-            lineOptions: null,
-            lineData: {
+            lineOptionsFaturado: null,
+            lineDataFaturado: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Crédiario',
+                        data: [],
+                        fill: false,
+                        backgroundColor: 'rgba(0, 128, 0, 0.6)',
+                        borderColor: 'rgba(0, 128, 0, 1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Cartão de Crédito',
+                        data: [],
+                        fill: false,
+                        backgroundColor: 'rgba(0, 192, 0, 0.6)',
+                        borderColor: 'rgba(0, 192, 0, 1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Pix',
+                        data: [],
+                        fill: false,
+                        backgroundColor: 'rgba(0, 255, 0, 0.6)',
+                        borderColor: 'rgba(0, 255, 0, 1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Dinheiro',
+                        data: [],
+                        fill: false,
+                        backgroundColor: 'rgba(128, 255, 128, 0.6)',
+                        borderColor: 'rgba(128, 255, 128, 1)',
+                        tension: 0.4
+                    }
+                ]
+            },
+            lineOptionsVenda: null,
+            lineDataVenda: {
                 labels: [],
                 datasets: [
                     {
@@ -64,39 +102,73 @@ export default {
         buscarPainelAdministrativo() {
             DashboardService.buscarPainelAdministrativo().then((res) => {
                 this.painelAdministrativo = res.data;
-                const vendasPorMes = res.data.indicadoresVendasPorMes;
-
-                const labels = [];
-                const dadosCrediario = [];
-                const dadosCartaoCredito = [];
-                const dadosPix = [];
-                const dadosDinheiro = [];
-
-                vendasPorMes.indicadorValorCrediarioPorMes.forEach((indicador) => {
-                    const nomeMes = this.formatarMes(indicador.mes);
-                    labels.push(`${indicador.ano} - ${nomeMes}`);
-
-                    dadosCrediario.push(indicador.total);
-                });
-
-                vendasPorMes.indicadorValorCartaoDeCreditoPorMes.forEach((indicador) => {
-                    dadosCartaoCredito.push(indicador.total);
-                });
-
-                vendasPorMes.indicadorValorPorMesPixPorMes.forEach((indicador) => {
-                    dadosPix.push(indicador.total);
-                });
-
-                vendasPorMes.indicadorValorDinheiroPorMes.forEach((indicador) => {
-                    dadosDinheiro.push(indicador.total);
-                });
-
-                this.lineData.labels = labels;
-                this.lineData.datasets[0].data = dadosCrediario;
-                this.lineData.datasets[1].data = dadosCartaoCredito;
-                this.lineData.datasets[2].data = dadosPix;
-                this.lineData.datasets[3].data = dadosDinheiro;
+                this.montarVendas(res.data.indicadoresVendasPorMes);
+                this.montarFaturamento(res.data.indicadoresTotalFaturadoPorMes);
             });
+        },
+        montarVendas(vendasPorMes) {
+            const labels = [];
+            const dadosCrediario = [];
+            const dadosCartaoCredito = [];
+            const dadosPix = [];
+            const dadosDinheiro = [];
+
+            vendasPorMes.indicadorValorCrediarioPorMes.forEach((indicador) => {
+                const nomeMes = this.formatarMes(indicador.mes);
+                labels.push(`${indicador.ano} - ${nomeMes}`);
+
+                dadosCrediario.push(indicador.total);
+            });
+
+            vendasPorMes.indicadorValorCartaoDeCreditoPorMes.forEach((indicador) => {
+                dadosCartaoCredito.push(indicador.total);
+            });
+
+            vendasPorMes.indicadorValorPorMesPixPorMes.forEach((indicador) => {
+                dadosPix.push(indicador.total);
+            });
+
+            vendasPorMes.indicadorValorDinheiroPorMes.forEach((indicador) => {
+                dadosDinheiro.push(indicador.total);
+            });
+
+            this.lineDataVenda.labels = labels;
+            this.lineDataVenda.datasets[0].data = dadosCrediario;
+            this.lineDataVenda.datasets[1].data = dadosCartaoCredito;
+            this.lineDataVenda.datasets[2].data = dadosPix;
+            this.lineDataVenda.datasets[3].data = dadosDinheiro;
+        },
+        montarFaturamento(faturamentoPorMes) {
+            const labels = [];
+            const dadosCrediario = [];
+            const dadosCartaoCredito = [];
+            const dadosPix = [];
+            const dadosDinheiro = [];
+
+            faturamentoPorMes.indicadorValorCrediarioPorMes.forEach((indicador) => {
+                const nomeMes = this.formatarMes(indicador.mes);
+                labels.push(`${indicador.ano} - ${nomeMes}`);
+
+                dadosCrediario.push(indicador.total);
+            });
+
+            faturamentoPorMes.indicadorValorCartaoDeCreditoPorMes.forEach((indicador) => {
+                dadosCartaoCredito.push(indicador.total);
+            });
+
+            faturamentoPorMes.indicadorValorPorMesPixPorMes.forEach((indicador) => {
+                dadosPix.push(indicador.total);
+            });
+
+            faturamentoPorMes.indicadorValorDinheiroPorMes.forEach((indicador) => {
+                dadosDinheiro.push(indicador.total);
+            });
+
+            this.lineDataFaturado.labels = labels;
+            this.lineDataFaturado.datasets[0].data = dadosCrediario;
+            this.lineDataFaturado.datasets[1].data = dadosCartaoCredito;
+            this.lineDataFaturado.datasets[2].data = dadosPix;
+            this.lineDataFaturado.datasets[3].data = dadosDinheiro;
         },
         formatarMes(mes) {
             switch (mes) {
@@ -207,7 +279,14 @@ export default {
         <div class="col-12 xl:col-6">
             <div class="card">
                 <h5>Vendas Por Mês</h5>
-                <Chart type="bar" :data="lineData" :options="lineOptions" />
+                <Chart type="bar" :data="lineDataVenda" :options="lineOptionsVenda" />
+            </div>
+        </div>
+
+        <div class="col-12 xl:col-6">
+            <div class="card">
+                <h5>Faturamento Por Mês</h5>
+                <Chart type="bar" :data="lineDataFaturado" :options="lineOptionsFaturado" />
             </div>
         </div>
     </div>
