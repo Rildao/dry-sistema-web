@@ -136,6 +136,17 @@ export default {
                     dataKey="id"
                     :metaKeySelection="true"
                 >
+                    <template #header>
+                        <div class="flex w-12 justify-content-between">
+                            <span class="w-5 p-input-icon-left">
+                                <i class="pi pi-search" />
+                                <InputText class="w-12" v-model="filters['global'].value" placeholder="Pesquise pelo nome do Cliente" />
+                            </span>
+                            <div class="flex flex-column md:flex-row">
+                                <Button label="Baixar" icon="pi pi-file-excel" severity="success" outlined v-tooltip="`Exportar tabela para Excel'.`" @click="exportCSV($event)" />
+                            </div>
+                        </div>
+                    </template>
                     <Column field="dataVenda" header="Data da venda" :sortable="true">
                         <template #body="{ data }">
                             {{ formatarData(data.dataVenda, 'DD/MM/YYYY') }}
@@ -171,9 +182,6 @@ export default {
                             <Tag :severity="severityStatus(data.statusVenda)">{{ formatarEnumStatus(data.statusVenda) }}</Tag>
                         </template>
                     </Column>
-                    <template #paginatorend>
-                        <Button label="Baixar" icon="pi pi-download" @click="exportCSV($event)" />
-                    </template>
                 </DataTable>
             </Fieldset>
         </template>

@@ -131,11 +131,14 @@ export default {
                 ref="dt"
             >
                 <template #header>
-                    <div class="w-12">
+                    <div class="flex w-12 justify-content-between">
                         <span class="w-5 p-input-icon-left">
                             <i class="pi pi-search" />
                             <InputText class="w-12" v-model="filters['global'].value" placeholder="Pesquise pelo nome ou CPF" />
                         </span>
+                        <div class="flex flex-column md:flex-row">
+                            <Button label="Baixar" icon="pi pi-file-excel" severity="success" outlined v-tooltip="`Exportar tabela para Excel'.`" @click="exportCSV($event)" />
+                        </div>
                     </div>
                 </template>
                 <Column bodyClass="pointer" field="nome" header="Nome" sortable></Column>
@@ -149,9 +152,6 @@ export default {
                         {{ maskTelefone(data.telefone) }}
                     </template>
                 </Column>
-                <template #paginatorend>
-                    <Button label="Baixar" icon="pi pi-download" @click="exportCSV($event)" />
-                </template>
             </DataTable>
         </Fieldset>
     </div>

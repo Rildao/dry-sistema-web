@@ -318,6 +318,7 @@ export default {
                 <div class="field col-12 lg:col-3 md:col-3">
                     <label for="cpf">CPF*</label>
                     <InputMask id="cpf" @input="v$.cpf.$touch()" :class="{ 'p-invalid': cpf !== null && v$.cpf.$error }" class="w-full" v-model="cpf" type="text" mask="999.999.999-99" placeholder="999.999.999-99" />
+                    <small class="p-error mb-3" v-if="cpf !== null && v$.cpf.$error">CPF é obrigatório</small>
                 </div>
                 <div class="field col-12 lg:col-3 md:col-3">
                     <label for="telefone">Telefone</label>
