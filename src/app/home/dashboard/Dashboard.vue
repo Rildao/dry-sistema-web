@@ -115,7 +115,7 @@ export default {
 
             vendasPorMes.indicadorValorCrediarioPorMes.forEach((indicador) => {
                 const nomeMes = this.formatarMes(indicador.mes);
-                labels.push(`${indicador.ano} - ${nomeMes}`);
+                labels.push(`${nomeMes} - ${indicador.ano}`);
 
                 dadosCrediario.push(indicador.total);
             });
@@ -147,7 +147,7 @@ export default {
 
             faturamentoPorMes.indicadorValorCrediarioPorMes.forEach((indicador) => {
                 const nomeMes = this.formatarMes(indicador.mes);
-                labels.push(`${indicador.ano} - ${nomeMes}`);
+                labels.push(`${nomeMes} - ${indicador.ano}`);
 
                 dadosCrediario.push(indicador.total);
             });
