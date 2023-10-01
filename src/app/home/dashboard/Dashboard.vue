@@ -19,14 +19,38 @@ export default {
             },
             lineOptions: null,
             lineData: {
-                labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                labels: [],
                 datasets: [
                     {
-                        label: '2023',
-                        data: [65, 59, 80, 81, 56, 55, 40, 60, 55, 40, 60, 55],
+                        label: 'Crédiario',
+                        data: [],
                         fill: false,
-                        backgroundColor: '#2f4860',
-                        borderColor: '#2f4860',
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Cartão de Crédito',
+                        data: [],
+                        fill: false,
+                        backgroundColor: 'rgba(0, 102, 204, 0.6)',
+                        borderColor: 'rgba(0, 102, 204, 1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Pix',
+                        data: [],
+                        fill: false,
+                        backgroundColor: 'rgba(0, 128, 255, 0.6)',
+                        borderColor: 'rgba(0, 128, 255, 1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Dinheiro',
+                        data: [],
+                        fill: false,
+                        backgroundColor: 'rgba(0, 76, 153, 0.6)',
+                        borderColor: 'rgba(0, 76, 153, 1)',
                         tension: 0.4
                     }
                 ]
@@ -40,7 +64,69 @@ export default {
         buscarPainelAdministrativo() {
             DashboardService.buscarPainelAdministrativo().then((res) => {
                 this.painelAdministrativo = res.data;
+                const vendasPorMes = res.data.indicadoresVendasPorMes;
+
+                const labels = [];
+                const dadosCrediario = [];
+                const dadosCartaoCredito = [];
+                const dadosPix = [];
+                const dadosDinheiro = [];
+
+                vendasPorMes.indicadorValorCrediarioPorMes.forEach((indicador) => {
+                    const nomeMes = this.formatarMes(indicador.mes);
+                    labels.push(`${indicador.ano} - ${nomeMes}`);
+
+                    dadosCrediario.push(indicador.total);
+                });
+
+                vendasPorMes.indicadorValorCartaoDeCreditoPorMes.forEach((indicador) => {
+                    dadosCartaoCredito.push(indicador.total);
+                });
+
+                vendasPorMes.indicadorValorPorMesPixPorMes.forEach((indicador) => {
+                    dadosPix.push(indicador.total);
+                });
+
+                vendasPorMes.indicadorValorDinheiroPorMes.forEach((indicador) => {
+                    dadosDinheiro.push(indicador.total);
+                });
+
+                this.lineData.labels = labels;
+                this.lineData.datasets[0].data = dadosCrediario;
+                this.lineData.datasets[1].data = dadosCartaoCredito;
+                this.lineData.datasets[2].data = dadosPix;
+                this.lineData.datasets[3].data = dadosDinheiro;
             });
+        },
+        formatarMes(mes) {
+            switch (mes) {
+                case 1:
+                    return 'JAN';
+                case 2:
+                    return 'FEV';
+                case 3:
+                    return 'MAR';
+                case 4:
+                    return 'ABRIL';
+                case 5:
+                    return 'MAIO';
+                case 6:
+                    return 'JUNHO';
+                case 7:
+                    return 'JULHO';
+                case 8:
+                    return 'AGOS';
+                case 9:
+                    return 'SET';
+                case 10:
+                    return 'OUT';
+                case 11:
+                    return 'NOV';
+                case 12:
+                    return 'DEZ';
+                default:
+                    return '';
+            }
         },
         redirectVendas() {
             this.$router.push('/vendas');
