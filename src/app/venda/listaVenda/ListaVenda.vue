@@ -31,6 +31,56 @@ export default {
                 this.totalDePagina = res.data.totalPage;
                 this.totalDeElementos = res.data.totalElements;
             });
+        },
+        exportCSV() {
+            VendaService.listarVendaCsv()
+                .then((res) => {
+                    this.montarArquivoCSV(res.data, 'vendas');
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
+        },
+        montarArquivoCSV(items, fileName) {
+            items.unshift('\uFEFF');
+
+            var jsonObject = JSON.stringify(items);
+            var csv = this.converterJsonParaCSV(jsonObject);
+
+            var exportedFilenmae = fileName + '.csv' || 'export.csv';
+
+            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            if (navigator.msSaveBlob) {
+                navigator.msSaveBlob(blob, exportedFilenmae);
+            } else {
+                var link = document.createElement('a');
+                if (link.download !== undefined) {
+                    var url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', exportedFilenmae);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        },
+        converterJsonParaCSV(objArray) {
+            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            var str = '';
+
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                for (var index in array[i]) {
+                    if (line != '') line += ',';
+
+                    line += array[i][index];
+                }
+
+                str += line + '\r\n';
+            }
+
+            return str;
         }
     },
     components: {},
@@ -121,6 +171,9 @@ export default {
                             <Tag :severity="severityStatus(data.statusVenda)">{{ formatarEnumStatus(data.statusVenda) }}</Tag>
                         </template>
                     </Column>
+                    <template #paginatorend>
+                        <Button label="Baixar" icon="pi pi-download" @click="exportCSV($event)" />
+                    </template>
                 </DataTable>
             </Fieldset>
         </template>

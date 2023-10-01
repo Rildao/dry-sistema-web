@@ -32,6 +32,57 @@ export default {
                 this.listaDeCliente = res.data.clientes;
                 this.totalDePagina = res.data.totalPage;
             });
+        },
+        exportCSV() {
+            ClienteService.listarClienteCsv()
+                .then((res) => {
+                    this.montarArquivoCSV(res.data, 'clientes');
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
+        },
+        montarArquivoCSV(items, fileName) {
+            items.unshift('\uFEFF');
+
+            var jsonObject = JSON.stringify(items);
+
+            var csv = this.converterJsonParaCSV(jsonObject);
+
+            var exportedFilenmae = fileName + '.csv' || 'export.csv';
+
+            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            if (navigator.msSaveBlob) {
+                navigator.msSaveBlob(blob, exportedFilenmae);
+            } else {
+                var link = document.createElement('a');
+                if (link.download !== undefined) {
+                    var url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', exportedFilenmae);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        },
+        converterJsonParaCSV(objArray) {
+            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            var str = '';
+
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                for (var index in array[i]) {
+                    if (line != '') line += ',';
+
+                    line += array[i][index];
+                }
+
+                str += line + '\r\n';
+            }
+
+            return str;
         }
     },
     mounted() {
@@ -77,6 +128,7 @@ export default {
                 selectionMode="single"
                 dataKey="id"
                 :metaKeySelection="true"
+                ref="dt"
             >
                 <template #header>
                     <div class="w-12">
@@ -97,6 +149,9 @@ export default {
                         {{ maskTelefone(data.telefone) }}
                     </template>
                 </Column>
+                <template #paginatorend>
+                    <Button label="Baixar" icon="pi pi-download" @click="exportCSV($event)" />
+                </template>
             </DataTable>
         </Fieldset>
     </div>
