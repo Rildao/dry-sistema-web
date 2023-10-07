@@ -48,7 +48,8 @@ export default {
             },
             exibirLancamento: false,
             atualizaVenda: false,
-            editingRows: []
+            editingRows: [],
+            rotaAtual: this.$route.name
         };
     },
     setup() {
@@ -65,8 +66,11 @@ export default {
             this.rotaClienteEditar = true;
             this.id = this.$route.params.id;
             this.buscarClientePorId(this.id);
-        } else if (this.$route.name === 'Cliente Novo') {
+        }
+        if (this.$route.name === 'Cliente Novo') {
+            this.limparCamposCliente();
             this.rotaClienteNovo = true;
+            this.rotaClienteEditar = false;
         }
     },
     methods: {
@@ -320,6 +324,14 @@ export default {
                 }
             }
         },
+
+        '$route.name': function (newVal) {
+            if (newVal === 'Cliente Novo') {
+                this.limparCamposCliente();
+                this.rotaClienteNovo = true;
+                this.rotaClienteEditar = false;
+            }
+        },
         vendaSelecionada() {
             if (this.vendaSelecionada) {
                 this.venda = this.vendaSelecionada;
@@ -382,6 +394,8 @@ export default {
                         </div>
                     </div>
                 </template>
+                <template #empty> Não exitem registros de vendas para exibição. </template>
+
                 <Column field="dataVenda" header="Data da Venda" :sortable="true">
                     <template #body="slotProps">
                         {{ $formatarData(slotProps.data.dataVenda, 'DD/MM/YYYY') }}
@@ -482,9 +496,6 @@ export default {
                         </template>
                     </Column>
                     <Column field="valorParcela" header="Valor da Parcela" style="width: 20%">
-                        <template #editor="{ data, field }">
-                            <InputNumber mode="currency" currency="BRL" locale="pt-BR" v-model="data[field]" />
-                        </template>
                         <template #body="{ data, field }"> {{ formatarValorReal(data[field]) }} </template>S
                     </Column>
                     <Column field="statusVenda" header="Status" style="width: 20%">
