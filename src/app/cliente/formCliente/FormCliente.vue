@@ -73,12 +73,13 @@ export default {
         formatarData,
         onRowEditSave(event) {
             let { newData, index } = event;
+            console.log(newData);
             this.$store.dispatch('addRequest');
             LancamentoService.atualizarLancamento(newData)
                 .then((res) => {
                     this.$store.dispatch('removeRequest');
                     if (res.success === true) {
-                        this.lancamentos[index] = res;
+                        this.lancamentos[index] = res.data;
                     } else {
                         this.$toast.add({ severity: 'error', summary: 'Error', detail: `${res.errors.descricao}`, life: 3000 });
                     }
