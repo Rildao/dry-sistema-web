@@ -141,7 +141,7 @@ export default {
             </Button>
         </div>
     </div>
-    <Dialog v-model:visible="openModal" modal :header="Notificacao" :style="{ width: '50%' }" :closable="false">
+    <Dialog v-model:visible="openModal" modal :style="{ width: '50%' }" :closable="false">
         <div class="text-center">
             <i class="pi pi-exclamation-triangle text-orange-400 text-7xl"></i>
             <div class="font-bold text-xl my-3">
