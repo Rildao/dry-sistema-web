@@ -71,9 +71,8 @@ export default {
     },
     methods: {
         formatarData,
-        onRowEditSave(event) {
+        onRowEditSave: function (event) {
             let { newData, index } = event;
-            console.log(newData);
             this.$store.dispatch('addRequest');
             LancamentoService.atualizarLancamento(newData)
                 .then((res) => {
