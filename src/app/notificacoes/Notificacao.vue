@@ -42,7 +42,6 @@ export default {
             this.$store.dispatch('addRequest');
             NotificacaoService.listarNotificacao('', 10, 0, true)
                 .then(({ data }) => {
-                    console.log(data);
                     this.notificacoesVistas = data.notificacoes;
                     this.quantidadeVistas = data.totalElements;
                 })
@@ -83,7 +82,16 @@ export default {
     },
     watch: {
         notificacaoSelecionada() {
-            this.$router.push(`/clientes/editar-cliente/${this.notificacaoSelecionada.venda.cliente.id}`);
+            if (this.notificacaoSelecionada) {
+                this.marcarComoVisto(this.notificacaoSelecionada);
+
+                this.$router.push({
+                    path: `/clientes/editar-cliente/${this.notificacaoSelecionada.venda.cliente.id}`,
+                    query: { vendaId: this.notificacaoSelecionada.venda.id }
+                });
+
+                this.notificacaoSelecionada = null;
+            }
         }
     }
 };
@@ -137,6 +145,7 @@ export default {
                         dataKey="id"
                         tableStyle="min-width: 50%"
                         selectionMode="single"
+                        class="p-datatable-sm"
                     >
                         <Column headerStyle="width: 5rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
                             <template #body="{ data }">

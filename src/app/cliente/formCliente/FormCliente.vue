@@ -66,6 +66,11 @@ export default {
             this.rotaClienteEditar = true;
             this.id = this.$route.params.id;
             this.buscarClientePorId(this.id);
+
+            if (this.$route.query.vendaId) {
+                this.vendaSelecionada = { id: this.$route.query.vendaId };
+                this.buscarVendaPorId();
+            }
         }
         if (this.$route.name === 'Cliente Novo') {
             this.limparCamposCliente();
@@ -379,7 +384,19 @@ export default {
                     <span class="font-bold text-lg">Vendas</span>
                 </div>
             </template>
-            <DataTable v-model:filters="filters" v-model:selection="vendaSelecionada" paginator :rows="5" :rowsPerPageOptions="[5, 10, 15]" :value="vendas" selectionMode="single" dataKey="id" :metaKeySelection="true" tableStyle="min-width: 50%">
+            <DataTable
+                v-model:filters="filters"
+                v-model:selection="vendaSelecionada"
+                paginator
+                :rows="5"
+                :rowsPerPageOptions="[5, 10, 15]"
+                :value="vendas"
+                selectionMode="single"
+                dataKey="id"
+                :metaKeySelection="true"
+                paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords}"
+            >
                 <template #header>
                     <div class="flex flex-column md:flex-row justify-content-between gap-2">
                         <div class="w-12">
