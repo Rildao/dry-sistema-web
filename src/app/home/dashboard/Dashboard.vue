@@ -100,11 +100,16 @@ export default {
     },
     methods: {
         buscarPainelAdministrativo() {
-            DashboardService.buscarPainelAdministrativo().then((res) => {
-                this.painelAdministrativo = res.data;
-                this.montarVendas(res.data.indicadoresVendasPorMes);
-                this.montarFaturamento(res.data.indicadoresTotalFaturadoPorMes);
-            });
+            this.$store.dispatch('addRequest');
+            DashboardService.buscarPainelAdministrativo()
+                .then((res) => {
+                    this.painelAdministrativo = res.data;
+                    this.montarVendas(res.data.indicadoresVendasPorMes);
+                    this.montarFaturamento(res.data.indicadoresTotalFaturadoPorMes);
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
         },
         montarVendas(vendasPorMes) {
             const labels = [];

@@ -4,6 +4,20 @@ import { formatarEnumVenda, formatarValorReal, formatarData, formatarEnumStatus 
 import { FilterMatchMode } from 'primevue/api';
 
 export default {
+    data() {
+        return {
+            listaDeVenda: [],
+            totalDePaginal: null,
+            totalDeElementos: 0,
+            totalDePagina: 0,
+            filters: {
+                global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+            },
+            pagina: 0,
+            linha: 0,
+            vendaSelecionada: null
+        };
+    },
     methods: {
         formatarEnumStatus,
         formatarValorReal,
@@ -84,19 +98,7 @@ export default {
         }
     },
     components: {},
-    data() {
-        return {
-            listaDeVenda: [],
-            totalDePaginal: null,
-            totalDeElementos: 0,
-            totalDePagina: 0,
-            filters: {
-                global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-            },
-            pagina: 0,
-            linha: 0
-        };
-    },
+
     mounted() {
         this.$store.dispatch('addRequest');
         VendaService.listarVenda()
@@ -108,6 +110,14 @@ export default {
             .finally(() => {
                 this.$store.dispatch('removeRequest');
             });
+    },
+    watch: {
+        vendaSelecionada() {
+            this.$router.push({
+                path: `/clientes/editar-cliente/${this.vendaSelecionada.cliente.id}`,
+                query: { vendaId: this.vendaSelecionada.id }
+            });
+        }
     }
 };
 </script>
@@ -123,6 +133,7 @@ export default {
                 </template>
                 <DataTable
                     v-model:filters="filters"
+                    v-model:selection="vendaSelecionada"
                     @page="pesquisa"
                     paginator
                     :rows="5"

@@ -8,7 +8,7 @@ import { formatarData, formatarValorReal } from '@/utils';
 export default {
     data() {
         return {
-            id: '',
+            id: null,
             nome: '',
             telefone: '',
             endereco: '',
@@ -282,6 +282,7 @@ export default {
             };
         },
         limparCamposCliente() {
+            this.id = null;
             this.nome = '';
             this.telefone = '';
             this.endereco = '';
@@ -532,13 +533,13 @@ export default {
             </Fieldset>
             <br />
             <div class="flex justify-content-end">
-                <Button label="Voltar" icon="pi pi-times" @click="fecharModal()" text />
-                <Button label="Adicionar" icon="pi pi-plus" @click="adicionarOuAtualizaVenda()" autofocus />
+                <Button label="Voltar" @click="fecharModal()" text />
+                <Button :label="venda.id ? 'Atualizar' : 'Cadastrar'" @click="adicionarOuAtualizaVenda()" autofocus></Button>
             </div>
         </Dialog>
 
         <div class="flex align-items-center text-primary mt-4 justify-content-end">
-            <Button label="Primary" class="w-full lg:w-2 justify-content-center" @click.stop="cadastrar()">Cadastrar</Button>
+            <Button label="Primary" class="w-full lg:w-2 justify-content-center" @click.stop="cadastrar()">{{ id ? 'Atualizar' : 'Cadastrar' }}</Button>
         </div>
     </div>
 </template>
