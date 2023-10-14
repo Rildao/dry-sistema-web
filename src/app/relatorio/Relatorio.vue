@@ -36,8 +36,7 @@ export default {
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <link id="theme-css" rel="stylesheet" type="text/css" href="/themes/lara-light-indigo/theme.css">
-                    <link rel="stylesheet" type="text/css" href="/node_modules/primeflex/primeflex.css">
-                    <link rel="stylesheet" type="text/css" href="/node_modules/primevue/resources/primevue.min.css'">
+                    <link rel="stylesheet" type="text/css" href="/styles/primeflex.min.css">
                     <style>
                         * {
                             box-sizing: border-box;
