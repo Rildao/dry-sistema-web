@@ -1,7 +1,7 @@
 <script>
 import { ClienteService } from '@/service';
 import { FilterMatchMode } from 'primevue/api';
-import { maskCPF, maskTelefone } from '../../../utils';
+import { maskCPF, maskTelefone } from '@/utils';
 
 export default {
     components: {},
@@ -74,7 +74,7 @@ export default {
             for (var i = 0; i < array.length; i++) {
                 var line = '';
                 for (var index in array[i]) {
-                    if (line != '') line += ',';
+                    if (line !== '') line += ',';
 
                     line += array[i][index];
                 }
@@ -116,7 +116,6 @@ export default {
                 v-model:selection="clienteSelecionado"
                 v-model:filters="filters"
                 :globalFilterFields="['nome', 'cpf']"
-                @page="pesquisa"
                 paginator
                 :rows="5"
                 :pageCount="totalDePagina"

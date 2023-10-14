@@ -86,7 +86,7 @@ export default {
             for (var i = 0; i < array.length; i++) {
                 var line = '';
                 for (var index in array[i]) {
-                    if (line != '') line += ',';
+                    if (line !== '') line += ',';
 
                     line += array[i][index];
                 }
@@ -134,7 +134,6 @@ export default {
                 <DataTable
                     v-model:filters="filters"
                     v-model:selection="vendaSelecionada"
-                    @page="pesquisa"
                     paginator
                     :rows="5"
                     :pageCount="totalDePagina"
