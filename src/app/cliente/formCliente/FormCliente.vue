@@ -106,7 +106,7 @@ export default {
         formatarValorReal,
         cadastrar() {
             this.v$.$touch();
-            if (this.v$.$invalid) return;
+            if (this.v$.nome.$error && this.v$.cpf.$error) return;
             this.$store.dispatch('addRequest');
             this.criarCliente();
         },
@@ -158,11 +158,12 @@ export default {
                     this.$store.dispatch('removeRequest');
                     if (res.success === true) {
                         this.$router.push('/clientes/editar-cliente/' + res.data.id);
+                        this.v$.$reset();
                         this.rotaClienteEditar = true;
                         this.$toast.add({
                             severity: 'success',
                             summary: 'Successo',
-                            detail: `Criado com sucesso!`,
+                            detail: `Cliente Criado com sucesso!`,
                             life: 3000
                         });
                     } else {
@@ -347,6 +348,14 @@ export default {
                 this.rotaClienteEditar = false;
             }
         },
+
+        '$route.params.id': function (newVal) {
+            if (newVal) {
+                this.id = newVal;
+                this.buscarClientePorId(this.id);
+            }
+        },
+
         vendaSelecionada() {
             if (this.vendaSelecionada) {
                 this.venda = this.vendaSelecionada;
@@ -528,6 +537,7 @@ export default {
                             placeholder="dd/mm/aaaa"
                             dateFormat="dd/mm/yy"
                             :disabled="atualizaVenda"
+                            showButtonBar
                         />
                         <small class="p-error mb-3" v-if="venda.dataVenda === null || v$.venda.dataVenda.$error">Data da venda é obrigatório</small>
                     </div>
