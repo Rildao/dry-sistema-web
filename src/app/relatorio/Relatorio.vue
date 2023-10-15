@@ -166,7 +166,7 @@ export default {
                         <i class="pi pi-info-circle" v-tooltip="'Início do mês de referência da fatura.'" style="color: slateblue"></i>
                     </label>
                     <Calendar id="dataInicio" v-model="dataInicio" class="w-full" showIcon placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" :class="{ 'p-invalid': dataInicio == null && v$.dataInicio.$error }" showButtonBar />
-                    <small class="p-error mb-3" v-if="dataInicio == null && v$.dataInicio.$error">Data Final é obrigatória</small>
+                    <small class="p-error mb-3" v-if="dataInicio == null && v$.dataInicio.$error">Data Inicial é obrigatória</small>
                 </div>
 
                 <div class="field col-12 lg:col-5 md:col-5">
