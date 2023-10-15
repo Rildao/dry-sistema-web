@@ -181,6 +181,7 @@ export default {
             this.modal = true;
         },
         fecharModal() {
+            this.v$.$reset();
             this.limparCamposVenda();
             this.vendaSelecionada = null;
             this.exibirLancamento = false;
