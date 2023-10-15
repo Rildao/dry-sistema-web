@@ -1,6 +1,6 @@
 <script>
 import useVuelidate from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
+import { minValue, maxValue, required, requiredIf, and } from '@vuelidate/validators';
 import { ClienteService, LancamentoService, VendaService } from '@/service';
 import { FilterMatchMode } from 'primevue/api';
 import { formatarData, formatarValorReal } from '@/utils';
@@ -58,7 +58,14 @@ export default {
     validations() {
         return {
             nome: { required },
-            cpf: { required }
+            cpf: { required },
+            venda: {
+                tipoVenda: { required },
+                dataVenda: { required },
+                valorVenda: { required },
+                quantidadeParcelas: requiredIf(minValue(1)),
+                diaVencimentoLancamento: requiredIf(and(minValue(1), maxValue(31)))
+            }
         };
     },
     mounted() {
@@ -99,7 +106,7 @@ export default {
         formatarValorReal,
         cadastrar() {
             this.v$.$touch();
-            if (this.v$.$invalid) return;
+            if (this.v$.nome.$error && this.v$.cpf.$error) return;
             this.$store.dispatch('addRequest');
             this.criarCliente();
         },
@@ -151,11 +158,12 @@ export default {
                     this.$store.dispatch('removeRequest');
                     if (res.success === true) {
                         this.$router.push('/clientes/editar-cliente/' + res.data.id);
+                        this.v$.$reset();
                         this.rotaClienteEditar = true;
                         this.$toast.add({
                             severity: 'success',
                             summary: 'Successo',
-                            detail: `Criado com sucesso!`,
+                            detail: `Cliente Criado com sucesso!`,
                             life: 3000
                         });
                     } else {
@@ -174,6 +182,7 @@ export default {
             this.modal = true;
         },
         fecharModal() {
+            this.v$.$reset();
             this.limparCamposVenda();
             this.vendaSelecionada = null;
             this.exibirLancamento = false;
@@ -209,7 +218,8 @@ export default {
         },
         adicionarOuAtualizaVenda() {
             this.venda.cliente.id = this.$route.params.id;
-
+            this.v$.$touch();
+            if (this.v$.$invalid) return;
             if (this.venda.id) {
                 this.atualizarVenda(this.venda);
             } else {
@@ -338,6 +348,14 @@ export default {
                 this.rotaClienteEditar = false;
             }
         },
+
+        '$route.params.id': function (newVal) {
+            if (newVal) {
+                this.id = newVal;
+                this.buscarClientePorId(this.id);
+            }
+        },
+
         vendaSelecionada() {
             if (this.vendaSelecionada) {
                 this.venda = this.vendaSelecionada;
@@ -454,34 +472,93 @@ export default {
                 </template>
                 <div class="formgrid grid">
                     <div class="field col-12 lg:col-4 md:col-4">
-                        <label for="tipoVenda">Tipo</label>
-                        <Dropdown id="tipoVenda" v-model="venda.tipoVenda" :options="tipoVendaEnum" optionLabel="nome" optionValue="codigo" showClear placeholder="Selecione o Tipo" class="w-full" :disabled="atualizaVenda" />
+                        <label for="tipoVenda">Tipo*</label>
+                        <Dropdown
+                            id="tipoVenda"
+                            @input="v$.venda.tipoVenda.$touch()"
+                            :class="{ 'p-invalid': venda.tipoVenda === null || v$.venda.tipoVenda.$error }"
+                            v-model="venda.tipoVenda"
+                            :options="tipoVendaEnum"
+                            optionLabel="nome"
+                            optionValue="codigo"
+                            showClear
+                            placeholder="Selecione o Tipo"
+                            class="w-full"
+                            :disabled="atualizaVenda"
+                        />
+                        <small class="p-error mb-3" v-if="venda.tipoVenda === null || v$.venda.tipoVenda.$error">Insira o tipo de venda</small>
                     </div>
 
                     <div class="field col-12 lg:col-4 md:col-4">
-                        <label for="valorVenda">Valor</label>
-                        <InputNumber id="tipoVenda" v-model="venda.valorVenda" optionLabel="nome" optionValue="codigo" showClear placeholder="R$ 0,00" class="w-full" mode="currency" currency="BRL" :disabled="atualizaVenda" />
+                        <label for="valorVenda">Valor*</label>
+                        <InputNumber
+                            id="valorVenda"
+                            @input="v$.venda.valorVenda.$touch()"
+                            :class="{ 'p-invalid': venda.valorVenda === null || v$.venda.valorVenda.$error }"
+                            v-model="venda.valorVenda"
+                            optionLabel="nome"
+                            optionValue="codigo"
+                            showClear
+                            placeholder="R$ 0,00"
+                            class="w-full"
+                            mode="currency"
+                            currency="BRL"
+                            :disabled="atualizaVenda"
+                        />
+                        <small class="p-error mb-3" v-if="venda.valorVenda === null || v$.venda.valorVenda.$error">Valor da venda é obrigatório</small>
+                    </div>
+
+                    <div v-if="venda.tipoVenda === 'CREDIARIO'" class="field col-12 lg:col-4 md:col-4">
+                        <label for="quantidadeParcelas">Quant. de Parcelas* <i class="pi pi-info-circle" v-tooltip="`Quant. de Parcelas aplicasse apenas no tipo 'Crediário'.`" style="color: slateblue"></i></label>
+                        <InputNumber
+                            id="quantidadeParcelas"
+                            @input="v$.venda.quantidadeParcelas.$touch()"
+                            :class="{ 'p-invalid': venda.tipoVenda === 'CREDIARIO' && (venda.quantidadeParcelas === null || v$.venda.quantidadeParcelas.$error) }"
+                            class="w-full"
+                            v-model="venda.quantidadeParcelas"
+                            inputId="minmax-buttons"
+                            mode="decimal"
+                            showButtons
+                            :min="1"
+                            :disabled="atualizaVenda"
+                        />
+                        <small class="p-error mb-3" v-if="venda.tipoVenda === 'CREDIARIO' && (venda.quantidadeParcelas === null || v$.venda.quantidadeParcelas.$error)">Insira um valor maior que 0</small>
                     </div>
 
                     <div class="field col-12 lg:col-4 md:col-4">
-                        <label for="quantidadeParcelas">Quant. de Parcelas <i class="pi pi-info-circle" v-tooltip="`Quant. de Parcelas aplicasse apenas no tipo 'Crediário'.`" style="color: slateblue"></i></label>
-                        <InputNumber v-if="venda.tipoVenda === 'CREDIARIO'" id="quantidadeParcelas" class="w-full" v-model="venda.quantidadeParcelas" inputId="minmax-buttons" mode="decimal" showButtons :min="0" :disabled="atualizaVenda" />
-
-                        <InputNumber v-else id="quantidadeParcelas" class="w-full" inputId="minmax-buttons" mode="decimal" showButtons :min="0" disabled />
+                        <label for="dataVenda">Data da Venda*</label>
+                        <Calendar
+                            id="dataVenda"
+                            @input="v$.venda.dataVenda.$touch()"
+                            :class="{ 'p-invalid': venda.dataVenda === null || v$.venda.dataVenda.$error }"
+                            class="w-full"
+                            v-model="venda.dataVenda"
+                            showIcon
+                            placeholder="dd/mm/aaaa"
+                            dateFormat="dd/mm/yy"
+                            :disabled="atualizaVenda"
+                            showButtonBar
+                        />
+                        <small class="p-error mb-3" v-if="venda.dataVenda === null || v$.venda.dataVenda.$error">Data da venda é obrigatório</small>
                     </div>
 
-                    <div class="field col-12 lg:col-4 md:col-4">
-                        <label for="dataVenda">Data da Venda</label>
-                        <Calendar id="dataVenda" class="w-full" v-model="venda.dataVenda" showIcon placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" :disabled="atualizaVenda" />
-                    </div>
-
-                    <div class="field col-12 lg:col-4 md:col-4">
+                    <div v-if="venda.tipoVenda === 'CREDIARIO'" class="field col-12 lg:col-4 md:col-4">
                         <label for="dataVencimentoLancamento">
-                            Dia de Venc. do Pagamento
+                            Dia de Venc. do Pagamento*
                             <i class="pi pi-info-circle" v-tooltip="`Dia de Venc. do Pagamento aplicasse apenas no tipo 'Crediário'.`" style="color: slateblue"></i>
                         </label>
-                        <InputNumber v-if="venda.tipoVenda === 'CREDIARIO'" id="dataVencimentoLancamento" class="w-full" v-model="venda.diaVencimentoLancamento" :min="1" :max="30" :disabled="atualizaVenda" />
-                        <InputNumber v-else id="dataVencimentoLancamento" class="w-full" :min="1" :max="30" disabled />
+                        <InputNumber
+                            id="dataVencimentoLancamento"
+                            @input="v$.venda.dataVenda.$touch()"
+                            :class="{ 'p-invalid': venda.diaVencimentoLancamento === null || v$.venda.diaVencimentoLancamento.$error }"
+                            class="w-full"
+                            v-model="venda.diaVencimentoLancamento"
+                            :min="1"
+                            :max="31"
+                            :disabled="atualizaVenda"
+                        />
+                        <small class="p-error mb-3" v-if="venda.diaVencimentoLancamento === null || v$.venda.diaVencimentoLancamento.$error">Insira o dia de vencimento é obrigatório</small>
+                        <small class="p-error mb-3" v-if="(venda.diaVencimentoLancamento < 1 || venda.diaVencimentoLancamento > 31) && v$.venda.diaVencimentoLancamento.$error">Insira um dia entre 1 a 31</small>
                     </div>
 
                     <div class="field col-12 lg:col-12 md:col-12">
