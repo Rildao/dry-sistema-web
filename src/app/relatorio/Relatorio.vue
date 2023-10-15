@@ -178,7 +178,7 @@ export default {
                     <small class="p-error mb-3" v-if="dataFim == null && v$.dataFim.$error">Data Final é obrigatória</small>
                 </div>
 
-                <div class="field col-12 lg:col-2 md:col-3 mt-4">
+                <div class="field col-12 lg:col-2 md:col-3 p-0 mt-4">
                     <Button class="w-full" @click="abrirModal()" icon="pi pi-search" label="Buscar" />
                 </div>
             </div>
