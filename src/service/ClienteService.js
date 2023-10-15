@@ -10,8 +10,8 @@ export const ClienteService = {
     criarClienteComVendas(cliente) {
         return axiosJwt.post(urlBase + '/venda', cliente);
     },
-    listarCliente(filtro = '', linhas = 15, pagina = 0) {
-        return axiosJwt.get(urlBase + `?page=${pagina}&size=${linhas}&sort=nome&filter=${filtro}`);
+    listarCliente(filtro = '') {
+        return axiosJwt.get(urlBase + `?sort=nome&filter=${filtro}`);
     },
     buscarClientePorId(id) {
         return axiosJwt.get(urlBase + '/' + id);

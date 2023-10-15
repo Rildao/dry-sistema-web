@@ -7,8 +7,8 @@ export const VendaService = {
     criarVenda(venda) {
         return axiosJwt.post(urlBase, venda);
     },
-    listarVenda(tamanho = 15, pagina = 0, clienteId = '') {
-        return axiosJwt.get(urlBase + `?clientId=${clienteId}&size=${tamanho}&page=${pagina}`);
+    listarVenda(clienteId = '') {
+        return axiosJwt.get(urlBase + `?clientId=${clienteId}`);
     },
     buscarVendaPorId(id) {
         return axiosJwt.get(urlBase + '/' + id);
