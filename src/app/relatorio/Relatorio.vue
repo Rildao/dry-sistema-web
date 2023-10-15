@@ -1,24 +1,26 @@
 <script>
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+
+import { RelatorioService } from '@/service';
+
 export default {
     data() {
         return {
             modal: false,
-            relatorios: [
-                {
-                    id: 1,
-                    mes: 'Abril',
-                    qtdVendas: 1,
-                    valorTotal: 49.0
-                },
-                {
-                    id: 2,
-                    mes: 'Maio',
-                    qtdVendas: 1,
-                    valorTotal: 49.0
-                }
-            ],
+            relatorios: [],
             dataInicio: null,
-            dataFim: null
+            dataFim: null,
+            mensagens: []
+        };
+    },
+    setup() {
+        return { v$: useVuelidate() };
+    },
+    validations() {
+        return {
+            dataInicio: { required },
+            dataFim: { required }
         };
     },
     methods: {
@@ -82,13 +84,63 @@ export default {
             }, 1000);
         },
         abrirModal() {
-            this.modal = true;
+            this.v$.$touch();
+            if (this.v$.$invalid) return;
+
+            if (this._validarData(this.dataFim.getFullYear())) return;
+
+            this.$store.dispatch('addRequest');
+            RelatorioService.emitirRelatorio(this.$formatarData(this.dataInicio, 'YYYY-MM-DD'), this.$formatarData(this.dataFim, 'YYYY-MM-DD'))
+                .then(({ data }) => {
+                    this.relatorios = data;
+                    this.modal = true;
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
         },
         fecharModal() {
             this.modal = false;
         },
         valorTotal() {
-            return this.relatorios.reduce((total, relatorio) => total + relatorio.valorTotal, 0);
+            return this.relatorios.reduce((total, relatorio) => total + relatorio.total, 0);
+        },
+        formatarMes(mes) {
+            switch (mes) {
+                case 1:
+                    return 'JAN';
+                case 2:
+                    return 'FEV';
+                case 3:
+                    return 'MAR';
+                case 4:
+                    return 'ABRIL';
+                case 5:
+                    return 'MAIO';
+                case 6:
+                    return 'JUNHO';
+                case 7:
+                    return 'JULHO';
+                case 8:
+                    return 'AGOS';
+                case 9:
+                    return 'SET';
+                case 10:
+                    return 'OUT';
+                case 11:
+                    return 'NOV';
+                case 12:
+                    return 'DEZ';
+                default:
+                    return '';
+            }
+        },
+        _validarData(anoFim) {
+            const anoAtual = new Date().getFullYear();
+            if (anoFim > anoAtual) {
+                this.mensagens.push('Ano de busca não pode ser maior que o ano atual.');
+                return true;
+            }
         }
     }
 };
@@ -100,24 +152,30 @@ export default {
             <template #legend>
                 <div class="flex align-items-center text-primary">
                     <span class="pi pi-user mr-2"></span>
-                    <span class="font-bold text-lg">Gerar Relatório</span>
+                    <span class="font-bold text-lg">Relatório</span>
                 </div>
             </template>
+            <Message v-for="mensagen in mensagens" :key="mensagen" severity="error">{{ mensagen }}</Message>
+
+            <br />
+
             <div class="formgrid grid">
                 <div class="field col-12 lg:col-5 md:col-5">
                     <label for="dataInicio">
-                        Data Inicial
+                        Data Inicial*
                         <i class="pi pi-info-circle" v-tooltip="'Início do mês de referência da fatura.'" style="color: slateblue"></i>
                     </label>
-                    <Calendar id="dataInicio" v-model="dataInicio" class="w-full" showIcon placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" />
+                    <Calendar id="dataInicio" v-model="dataInicio" class="w-full" showIcon placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" :class="{ 'p-invalid': dataInicio == null && v$.dataInicio.$error }" showButtonBar />
+                    <small class="p-error mb-3" v-if="dataInicio == null && v$.dataInicio.$error">Data Final é obrigatória</small>
                 </div>
 
                 <div class="field col-12 lg:col-5 md:col-5">
                     <label for="dataFim">
-                        Data Final
+                        Data Final*
                         <i class="pi pi-info-circle" v-tooltip="'Fim do mês de referência da fatura.'" style="color: slateblue"></i>
                     </label>
-                    <Calendar id="dataFim" v-model="dataFim" class="w-full" showIcon placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" />
+                    <Calendar id="dataFim" v-model="dataFim" class="w-full" showIcon placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" :class="{ 'p-invalid': dataFim == null && v$.dataFim.$error }" showButtonBar />
+                    <small class="p-error mb-3" v-if="dataFim == null && v$.dataFim.$error">Data Final é obrigatória</small>
                 </div>
 
                 <div class="field col-12 lg:col-2 md:col-3 mt-4">
@@ -159,15 +217,17 @@ export default {
                         <thead>
                             <tr>
                                 <th class="text-left font-semibold py-3 border-bottom-1 surface-border white-space-nowrap">Mês</th>
+                                <th class="text-right font-semibold py-3 border-bottom-1 surface-border white-space-nowrap">Ano</th>
                                 <th class="text-right font-semibold py-3 border-bottom-1 surface-border white-space-nowrap px-3">Qtd. Vendas</th>
                                 <th class="text-right font-semibold py-3 border-bottom-1 surface-border white-space-nowrap">Valor Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="relatorio in relatorios" :key="relatorio.id">
-                                <td class="text-left py-3 border-bottom-1 surface-border white-space-nowrap">{{ relatorio.mes }}</td>
+                            <tr v-for="relatorio in relatorios" :key="relatorio">
+                                <td class="text-left py-3 border-bottom-1 surface-border white-space-nowrap">{{ formatarMes(relatorio.mes) }}</td>
+                                <td class="text-right py-3 border-bottom-1 surface-border">{{ relatorio.ano }}</td>
                                 <td class="text-right py-3 border-bottom-1 surface-border px-3">{{ relatorio.qtdVendas }}</td>
-                                <td class="text-right py-3 border-bottom-1 surface-border">{{ $formatarValorReal(relatorio.valorTotal) }}</td>
+                                <td class="text-right py-3 border-bottom-1 surface-border">{{ $formatarValorReal(relatorio.total) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -189,5 +249,3 @@ export default {
         </div>
     </Dialog>
 </template>
-
-<style></style>
