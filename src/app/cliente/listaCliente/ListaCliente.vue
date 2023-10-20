@@ -23,12 +23,8 @@ export default {
         maskCPF,
         maskTelefone,
         pesquisa(event) {
-            const dados = {
-                filtro: event.filters.global.value !== null ? event.filters.global.value : '',
-                linhas: this.linha,
-                pagina: this.pagina
-            };
-            ClienteService.listarCliente(dados.filtro, dados.linhas, dados.pagina).then((res) => {
+            this.filtro = event.filters.global.value !== null ? event.filters.global.value : '';
+            ClienteService.listarCliente(this.filtro, event.page, event.rows).then((res) => {
                 this.listaDeCliente = res.data.clientes;
                 this.totalDePagina = res.data.totalPage;
             });
@@ -83,6 +79,28 @@ export default {
             }
 
             return str;
+        },
+        pesquisaPorNomeOuCPF() {
+            const filtro = this.filters['global'].value;
+            if (filtro.toString().length => 2) {
+                ClienteService.listarCliente(this.filters['global'].value)
+                    .then((res) => {
+                        this.listaDeCliente = res.data.clientes;
+                        this.totalDeElementos = res.data.totalElements;
+                    })
+                    .finally(() => {
+                        this.$store.dispatch('removeRequest');
+                    });
+            }  else {
+                ClienteService.listarCliente('', 0, 5)
+                    .then((res) => {
+                        this.listaDeCliente = res.data.clientes;
+                        this.totalDeElementos = res.data.totalElements;
+                    })
+                    .finally(() => {
+                        this.$store.dispatch('removeRequest');
+                    });
+            }
         }
     },
     mounted() {
@@ -90,7 +108,7 @@ export default {
         ClienteService.listarCliente()
             .then((res) => {
                 this.listaDeCliente = res.data.clientes;
-                this.totalDePagina = res.data.totalPage;
+                this.totalDeElementos = res.data.totalElements;
             })
             .finally(() => {
                 this.$store.dispatch('removeRequest');
@@ -117,6 +135,8 @@ export default {
                 v-model:filters="filters"
                 :globalFilterFields="['nome', 'cpf']"
                 paginator
+                lazy
+                @page="pesquisa($event)"
                 :rows="5"
                 :pageCount="totalDePagina"
                 :totalRecords="totalDeElementos"
@@ -133,13 +153,15 @@ export default {
                     <div class="flex w-12 justify-content-between">
                         <span class="w-5 p-input-icon-left">
                             <i class="pi pi-search" />
-                            <InputText class="w-12" v-model="filters['global'].value" placeholder="Pesquise pelo nome ou CPF" />
+                            <InputText class="w-12" @keyup="pesquisaPorNomeOuCPF()" v-model="filters['global'].value" placeholder="Pesquise pelo nome ou CPF" />
                         </span>
                         <div class="flex flex-column md:flex-row">
                             <Button label="Baixar" icon="pi pi-file-excel" severity="success" outlined v-tooltip="`Exportar tabela para Excel.`" @click="exportCSV($event)" />
                         </div>
                     </div>
                 </template>
+                <template #empty> Nenhum cliente encontrado </template>
+                <template #loading> Carregando... </template>
                 <Column bodyClass="pointer" field="nome" header="Nome" sortable></Column>
                 <Column field="cpf" bodyClass="pointer" header="CPF">
                     <template #body="{ data }">
