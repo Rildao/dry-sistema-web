@@ -16,16 +16,17 @@ export default {
             totalDePagina: null,
             pagina: 0,
             linha: 0,
-            totalDeElementos: null
+            totalDeElementos: null,
+            pesquisaEvent: ''
         };
     },
     methods: {
         maskCPF,
         maskTelefone,
         pesquisa(event) {
-            this.filtro = event.filters.global.value !== null ? event.filters.global.value : '';
-            ClienteService.listarCliente(this.filtro, event.page, event.rows).then((res) => {
+            ClienteService.listarCliente(this.pesquisaEvent, event.page, event.rows).then((res) => {
                 this.listaDeCliente = res.data.clientes;
+                this.totalDeElementos = res.data.totalElements;
                 this.totalDePagina = res.data.totalPage;
             });
         },
@@ -80,34 +81,42 @@ export default {
 
             return str;
         },
-        pesquisaPorNomeOuCPF() {
-            const filtro = this.filters['global'].value;
-            if (filtro.toString().length => 2) {
-                ClienteService.listarCliente(this.filters['global'].value)
+        pesquisaPorNomeOuCPF(filtro) {
+            if (filtro.toString().length >= 2) {
+                ClienteService.listarCliente(filtro)
                     .then((res) => {
                         this.listaDeCliente = res.data.clientes;
                         this.totalDeElementos = res.data.totalElements;
+                        this.totalDePagina = res.data.totalPage;
                     })
                     .finally(() => {
                         this.$store.dispatch('removeRequest');
                     });
             }
+        },
+        listarClientes() {
+            this.$store.dispatch('addRequest');
+            ClienteService.listarCliente()
+                .then((res) => {
+                    this.listaDeCliente = res.data.clientes;
+                    this.totalDeElementos = res.data.totalElements;
+                    this.totalDePagina = res.data.totalPage;
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
         }
     },
     mounted() {
-        this.$store.dispatch('addRequest');
-        ClienteService.listarCliente()
-            .then((res) => {
-                this.listaDeCliente = res.data.clientes;
-                this.totalDeElementos = res.data.totalElements;
-            })
-            .finally(() => {
-                this.$store.dispatch('removeRequest');
-            });
+        this.listarClientes();
     },
     watch: {
         clienteSelecionado() {
             this.$router.push(`/clientes/editar-cliente/${this.clienteSelecionado.id}`);
+        },
+        pesquisaEvent() {
+            if (this.pesquisaEvent.length >= 2) this.pesquisaPorNomeOuCPF(this.pesquisaEvent);
+            if (this.pesquisaEvent == '') this.listarClientes();
         }
     }
 };
@@ -144,7 +153,7 @@ export default {
                     <div class="flex w-12 justify-content-between">
                         <span class="w-5 p-input-icon-left">
                             <i class="pi pi-search" />
-                            <InputText class="w-12" @keyup="pesquisaPorNomeOuCPF()" v-model="filters['global'].value" placeholder="Pesquise pelo nome ou CPF" />
+                            <InputText class="w-12" v-model="pesquisaEvent" placeholder="Pesquise pelo nome ou CPF" />
                         </span>
                         <div class="flex flex-column md:flex-row">
                             <Button label="Baixar" icon="pi pi-file-excel" severity="success" outlined v-tooltip="`Exportar tabela para Excel.`" @click="exportCSV($event)" />

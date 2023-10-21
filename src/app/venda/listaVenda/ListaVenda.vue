@@ -16,7 +16,8 @@ export default {
             pagina: 0,
             linha: 0,
             vendaSelecionada: null,
-            clientId: null
+            clientId: '',
+            pesquisaEvento: ''
         };
     },
     methods: {
@@ -34,26 +35,21 @@ export default {
                     return 'warning';
             }
         },
-        pesquisaNome() {
-            ClienteService.listarCliente(this.filters['global'].value)
-                .then((res) => {
-                    this.clientId = res.data.clientes[0].id;
-                    if (this.filters['global'].value !== null) {
-                        this.clientId = this.filters['global'].value !== '' ? this.clientId : '';
-                        VendaService.listarVenda(this.clientId, 0, 20).then((res) => {
-                            this.listaDeVenda = res.data.vendas;
-                            this.totalDePagina = res.data.totalPage;
-                        });
-                    }
-                })
-                .finally(() => {
-                    this.$store.dispatch('removeRequest');
+        pesquisaNome(filtro) {
+            ClienteService.listarCliente(filtro).then((res) => {
+                this.clientId = res.data.clientes[0].id;
+                VendaService.listarVenda(this.clientId, 0, 20).then((res) => {
+                    this.listaDeVenda = res.data.vendas;
+                    this.totalDePagina = res.data.totalPage;
+                    this.totalDeElementos = res.data.totalElements;
                 });
+            });
         },
         pesquisa(event) {
             VendaService.listarVenda(this.clientId !== null ? this.clientId : '', event.page, event.rows).then((res) => {
                 this.listaDeVenda = res.data.vendas;
                 this.totalDePagina = res.data.totalPage;
+                this.totalDeElementos = res.data.totalElements;
             });
         },
         exportCSV() {
@@ -105,21 +101,24 @@ export default {
             }
 
             return str;
+        },
+        listarVendas() {
+            this.$store.dispatch('addRequest');
+            VendaService.listarVenda('', 0, 20)
+                .then((res) => {
+                    this.listaDeVenda = res.data.vendas;
+                    this.totalDeElementos = res.data.totalElements;
+                    this.totalDePagina = res.data.totalPage;
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
         }
     },
     components: {},
 
     mounted() {
-        this.$store.dispatch('addRequest');
-        VendaService.listarVenda('', 0, 20)
-            .then((res) => {
-                this.listaDeVenda = res.data.vendas;
-                this.totalDeElementos = res.data.totalElements;
-                this.totalDePagina = res.data.totalPage;
-            })
-            .finally(() => {
-                this.$store.dispatch('removeRequest');
-            });
+        this.listarVendas();
     },
     watch: {
         vendaSelecionada() {
@@ -127,6 +126,10 @@ export default {
                 path: `/clientes/editar-cliente/${this.vendaSelecionada.cliente.id}`,
                 query: { vendaId: this.vendaSelecionada.id }
             });
+        },
+        pesquisaEvento() {
+            if (this.pesquisaEvento.length >= 2) this.pesquisaNome(this.pesquisaEvento);
+            if (this.pesquisaEvento == '') this.listarVendas();
         }
     }
 };
@@ -162,7 +165,7 @@ export default {
                         <div class="flex w-12 justify-content-between">
                             <span class="w-5 p-input-icon-left">
                                 <i class="pi pi-search" />
-                                <InputText class="w-12" @keyup="pesquisaNome()" v-model="filters['global'].value" placeholder="Pesquise pelo nome do Cliente" />
+                                <InputText class="w-12" v-model="pesquisaEvento" placeholder="Pesquise pelo nome do Cliente" />
                             </span>
                             <div class="flex flex-column md:flex-row">
                                 <Button label="Baixar" icon="pi pi-file-excel" severity="success" outlined v-tooltip="`Exportar tabela para Excel.`" @click="exportCSV($event)" />
