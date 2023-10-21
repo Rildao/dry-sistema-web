@@ -2,29 +2,40 @@
 import { axiosJwt } from '@/service/axiosJwt';
 import { useLayout } from '@/layout/composables/layout';
 const { onMenuToggle } = useLayout();
-import { apiUrl } from '@/service';
+import { apiUrl, NotificacaoService } from '@/service';
+import { EventBus } from '@/service/EventBus';
+
 export default {
     data() {
         return {
             outsideClickListener: { value: null },
             topbarMenuActive: { value: false },
-
+            quantidadeNotificacoes: 0,
+            openModal: false,
             items: [
-                {
-                    label: 'Opções',
-                    items: [
-                        {
-                            label: 'Configurações',
-                            icon: 'pi pi-cog'
-                        },
-                        { separator: true }
-                    ]
-                }
+                // {
+                //     label: 'Opções',
+                //     items: [
+                //         {
+                //             label: 'Configurações',
+                //             icon: 'pi pi-cog'
+                //         },
+                //         { separator: true }
+                //     ]
+                // }
             ]
         };
     },
     mounted() {
         this.bindOutsideClickListener();
+        this.buscarQuantidadeNotificacoesNaoLidas();
+    },
+    created() {
+        EventBus.on('notificacao', () => {
+            this.atualizarQuantidadeNotificacoes().then(({ data }) => {
+                this.quantidadeNotificacoes = data;
+            });
+        });
     },
     beforeMount() {
         this.unbindOutsideClickListener();
@@ -76,6 +87,29 @@ export default {
         },
         toggle(event) {
             this.$refs.menu.toggle(event);
+        },
+
+        atualizarQuantidadeNotificacoes() {
+            return NotificacaoService.buscarQuantidadeNotificacoesNaoLidas();
+        },
+
+        buscarQuantidadeNotificacoesNaoLidas() {
+            this.atualizarQuantidadeNotificacoes().then(({ data }) => {
+                this.quantidadeNotificacoes = data;
+                if (this.quantidadeNotificacoes > 0) {
+                    this.openModal = true;
+                }
+            });
+        },
+        redirectNotificacoes() {
+            this.openModal = false;
+            this.$router.push('/notificacoes');
+        },
+        fecharModal() {
+            this.openModal = false;
+        },
+        textoAlerta() {
+            return this.quantidadeNotificacoes > 1 ? 'novas notificações não lidas' : 'nova notificação não lida';
         }
     }
 };
@@ -87,30 +121,39 @@ export default {
             <i class="pi pi-bars"></i>
         </button>
 
+        <router-link to="/" class="p-link layout-topbar-logo">
+            <img id="topbar-logo" src="/demo/images/login/login.png" alt="dry-logo" style="height: 55px" />
+        </router-link>
+
         <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
             <i class="pi pi-ellipsis-v"></i>
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <Button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i v-badge="2" class="pi pi-bell p-overlay-badge" />
+            <Button @click="redirectNotificacoes()" class="p-link layout-topbar-button" v-tooltip.bottom="'Notificação'">
+                <i v-badge="quantidadeNotificacoes" class="pi pi-bell p-overlay-badge" />
                 <span class="span">Notificação</span>
             </Button>
 
-            <button class="p-link layout-topbar-button" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu">
-                <i class="pi pi-user"></i>
-                <span class="span">Perfil</span>
-
-                <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
-                    <template #end>
-                        <button class="w-full p-link flex align-items-center p-2 pl-4 text-color hover:surface-200 border-noround" @click="logout()">
-                            <i class="pi pi-sign-out" />
-                            <span class="ml-2">Sair</span>
-                        </button>
-                    </template>
-                </Menu>
-            </button>
+            <Button @click="logout()" class="p-link layout-topbar-button" v-tooltip.bottom="'Sair'">
+                <i class="pi pi-sign-out" />
+                <span class="span">Sair</span>
+            </Button>
         </div>
-        
+    </div>
+    <Dialog v-model:visible="openModal" modal :style="{ width: '50%' }" :closable="false">
+        <div class="text-center">
+            <i class="pi pi-exclamation-triangle text-orange-400 text-7xl"></i>
+            <div class="font-bold text-xl my-3">
+                Olá, Você possui '<b class="font-bold text-primary">{{ quantidadeNotificacoes }}</b
+                >' {{ textoAlerta() }}. Deseja ir para a tela de notificações?
             </div>
+        </div>
+        <template #footer>
+            <div class="flex justify-content-between xl:justify-content-end">
+                <Button label="Não" @click="fecharModal()" text />
+                <Button label="Sim" @click="redirectNotificacoes()" autofoucus />
+            </div>
+        </template>
+    </Dialog>
 </template>

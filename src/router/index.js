@@ -54,7 +54,7 @@ trackRouter(router);
  */
 
 router.beforeEach((to, from, next) => {
-    const pathPublicos = ['/login', '/cadastrar', '/landing'];
+    const pathPublicos = ['/login'];
     const authPath = !pathPublicos.includes(to.path);
 
     const atuenticado = validarToken(localStorage.getItem('token'));

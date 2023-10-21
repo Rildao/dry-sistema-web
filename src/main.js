@@ -100,6 +100,7 @@ import TreeSelect from 'primevue/treeselect';
 import TreeTable from 'primevue/treetable';
 import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
+import Editor from 'primevue/editor';
 
 import CodeHighlight from '@/components/CodeHighlight.vue';
 import BlockViewer from '@/components/BlockViewer.vue';
@@ -111,6 +112,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome';
+import { formatarValorReal } from './utils/formatarValorReal';
+import { formatarData, formatarDataBrasileiraParaIso } from './utils/formatarData';
 
 library.add(fas);
 
@@ -157,6 +160,10 @@ app.use(PrimeVue, {
     ripple: true,
     inputStyle: 'outlined'
 });
+
+app.config.globalProperties.$formatarValorReal = formatarValorReal;
+app.config.globalProperties.$formatarDataBrasileiraParaIso = formatarDataBrasileiraParaIso;
+app.config.globalProperties.$formatarData = formatarData;
 
 app.use(store);
 app.use(router);
@@ -272,5 +279,5 @@ app.component('TreeSelect', TreeSelect);
 app.component('TreeTable', TreeTable);
 app.component('TriStateCheckbox', TriStateCheckbox);
 app.component('VirtualScroller', VirtualScroller);
-
+app.component('Editor', Editor);
 app.mount('#app');

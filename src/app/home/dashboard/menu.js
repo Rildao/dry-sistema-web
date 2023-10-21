@@ -1,5 +1,5 @@
 export const dashboardMenu = {
     label: 'Dashboard',
-    icon: 'pi pi-fw pi-home',
+    icon: 'pi pi-chart-bar',
     to: '/'
 };

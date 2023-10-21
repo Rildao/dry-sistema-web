@@ -19,7 +19,10 @@ export default {
             type: Boolean,
             default: () => true
         },
-
+        paginacao: {
+            type: Function,
+            default: () => null
+        },
         filtersProp: {
             type: Object,
             default: () => null
@@ -94,7 +97,10 @@ export default {
         :rows="5"
         :dataKey="dataKey"
         :rowHover="true"
+        :rowClass="() => classeLinha"
         v-model:filters="filters"
+        @page="paginacao"
+        :meta-key-selection="true"
         :autoLayout="true"
         :globalFilterFields="globalFilterFields"
         :rowsPerPageOptions="[5, 10, 20, 50]"
@@ -127,9 +133,12 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-::v-deep(.p-paginator) {
-    .p-paginator-current {
-        margin-left: auto;
-    }
+:deep(.p-datatable-header) {
+    background: #fff;
+    color: #fff;
+    border: 1px solid #dee2e6;
+    border-width: 1px 0 1px 0;
+    padding: 1rem 1rem;
+    font-weight: 700;
 }
 </style>
