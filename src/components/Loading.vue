@@ -46,6 +46,6 @@
     z-index: 10001;
 }
 .spinnerCollor {
-    color: #6366f1;
+    color: #8183f4;
 }
 </style>
