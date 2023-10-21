@@ -1,5 +1,5 @@
 <script>
-import { VendaService } from '@/service';
+import { ClienteService, VendaService } from '@/service';
 import { formatarEnumVenda, formatarValorReal, formatarData, formatarEnumStatus } from '@/utils';
 import { FilterMatchMode } from 'primevue/api';
 
@@ -15,7 +15,8 @@ export default {
             },
             pagina: 0,
             linha: 0,
-            vendaSelecionada: null
+            vendaSelecionada: null,
+            clientId: null
         };
     },
     methods: {
@@ -33,17 +34,26 @@ export default {
                     return 'warning';
             }
         },
+        pesquisaNome() {
+            ClienteService.listarCliente(this.filters['global'].value)
+                .then((res) => {
+                    this.clientId = res.data.clientes[0].id;
+                    if (this.filters['global'].value !== null) {
+                      this.clientId =  this.filters['global'].value !== '' ? this.clientId: ''
+                        VendaService.listarVenda(this.clientId, 0, 20).then((res) => {
+                            this.listaDeVenda = res.data.vendas;
+                            this.totalDePagina = res.data.totalPage;
+                        });
+                    }
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
+        },
         pesquisa(event) {
-            const dados = {
-                filtro: event.filters.global.value !== null ? event.filters.global.value : '',
-                linhas: this.linha,
-                pagina: this.pagina
-            };
-
-            VendaService.listarVenda(dados.linhas, dados.pagina).then((res) => {
+            VendaService.listarVenda(this.clientId, event.page, event.rows).then((res) => {
                 this.listaDeVenda = res.data.vendas;
                 this.totalDePagina = res.data.totalPage;
-                this.totalDeElementos = res.data.totalElements;
             });
         },
         exportCSV() {
@@ -101,7 +111,7 @@ export default {
 
     mounted() {
         this.$store.dispatch('addRequest');
-        VendaService.listarVenda()
+        VendaService.listarVenda('', 0, 20)
             .then((res) => {
                 this.listaDeVenda = res.data.vendas;
                 this.totalDeElementos = res.data.totalElements;
@@ -136,6 +146,8 @@ export default {
                     v-model:selection="vendaSelecionada"
                     paginator
                     :rows="5"
+                    lazy
+                    @page="pesquisa($event)"
                     :pageCount="totalDePagina"
                     :totalRecords="totalDeElementos"
                     :rowsPerPageOptions="[5, 10, 15]"
@@ -150,13 +162,15 @@ export default {
                         <div class="flex w-12 justify-content-between">
                             <span class="w-5 p-input-icon-left">
                                 <i class="pi pi-search" />
-                                <InputText class="w-12" v-model="filters['global'].value" placeholder="Pesquise pelo nome do Cliente" />
+                                <InputText class="w-12" @keyup="pesquisaNome()" v-model="filters['global'].value" placeholder="Pesquise pelo nome do Cliente" />
                             </span>
                             <div class="flex flex-column md:flex-row">
                                 <Button label="Baixar" icon="pi pi-file-excel" severity="success" outlined v-tooltip="`Exportar tabela para Excel.`" @click="exportCSV($event)" />
                             </div>
                         </div>
                     </template>
+                    <template #empty> Nenhuma venda encontrado </template>
+                    <template #loading> Carregando... </template>
                     <Column field="dataVenda" header="Data da venda" :sortable="true">
                         <template #body="{ data }">
                             {{ formatarData(data.dataVenda, 'DD/MM/YYYY') }}

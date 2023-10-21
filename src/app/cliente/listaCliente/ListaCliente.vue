@@ -91,15 +91,6 @@ export default {
                     .finally(() => {
                         this.$store.dispatch('removeRequest');
                     });
-            }  else {
-                ClienteService.listarCliente('', 0, 5)
-                    .then((res) => {
-                        this.listaDeCliente = res.data.clientes;
-                        this.totalDeElementos = res.data.totalElements;
-                    })
-                    .finally(() => {
-                        this.$store.dispatch('removeRequest');
-                    });
             }
         }
     },
