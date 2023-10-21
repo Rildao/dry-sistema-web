@@ -39,7 +39,7 @@ export default {
                 .then((res) => {
                     this.clientId = res.data.clientes[0].id;
                     if (this.filters['global'].value !== null) {
-                      this.clientId =  this.filters['global'].value !== '' ? this.clientId: ''
+                        this.clientId = this.filters['global'].value !== '' ? this.clientId : '';
                         VendaService.listarVenda(this.clientId, 0, 20).then((res) => {
                             this.listaDeVenda = res.data.vendas;
                             this.totalDePagina = res.data.totalPage;
@@ -51,7 +51,7 @@ export default {
                 });
         },
         pesquisa(event) {
-            VendaService.listarVenda(this.clientId, event.page, event.rows).then((res) => {
+            VendaService.listarVenda(this.clientId !== null ? this.clientId : '', event.page, event.rows).then((res) => {
                 this.listaDeVenda = res.data.vendas;
                 this.totalDePagina = res.data.totalPage;
             });
