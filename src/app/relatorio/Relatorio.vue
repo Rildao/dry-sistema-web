@@ -23,6 +23,13 @@ export default {
             dataFim: { required }
         };
     },
+    mounted() {
+        if (this.$route.query.dataInicio && this.$route.query.dataFim) {
+            this.dataInicio = new Date(this.$route.query.dataInicio);
+            this.dataFim = new Date(this.$route.query.dataFim);
+            this.abrirModal();
+        }
+    },
     methods: {
         _titulo() {
             return `Relatorio-${this.$formatarData(new Date(), 'DD/MM/YYYY')}`;
@@ -139,6 +146,18 @@ export default {
             const anoAtual = new Date().getFullYear();
             if (anoFim > anoAtual) {
                 this.mensagens.push('Ano de busca não pode ser maior que o ano atual.');
+                return true;
+            }
+            if (anoFim < anoAtual - 1) {
+                this.mensagens.push('Ano de busca não pode ser menor que o ano anterior.');
+                return true;
+            }
+            if (anoFim == anoAtual - 1 && this.dataFim.getMonth() > new Date().getMonth()) {
+                this.mensagens.push('Mês de busca não pode ser maior que o mês atual.');
+                return true;
+            }
+            if (this.dataInicio > this.dataFim) {
+                this.mensagens.push('Data Inicial não pode ser maior que a Data Final.');
                 return true;
             }
         }

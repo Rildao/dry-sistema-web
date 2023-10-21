@@ -1,11 +1,13 @@
 <script>
 import { DashboardService } from '@/service';
+import moment from 'moment';
 
 export default {
     data() {
         return {
             isHovered: false,
             isHovered1: false,
+            isHovered2: false,
             painelAdministrativo: {
                 totalClientes: '',
                 totalVendas: '',
@@ -211,6 +213,18 @@ export default {
         redirectClientes() {
             this.$router.push('/clientes');
         },
+        redirectRelatorio() {
+            const dataAtual = moment();
+            const dataFim = dataAtual.clone().subtract(12, 'months');
+
+            const dataAtualFormatada = dataAtual.format('YYYY-MM-DD');
+            const dataFimFormatada = dataFim.format('YYYY-MM-DD');
+
+            this.$router.push({
+                path: `/relatorio`,
+                query: { dataInicio: dataFimFormatada, dataFim: dataAtualFormatada }
+            });
+        },
         mouseOver() {
             this.isHovered = true;
         },
@@ -222,6 +236,12 @@ export default {
         },
         mouseLeave1() {
             this.isHovered1 = false;
+        },
+        mouseOver2() {
+            this.isHovered2 = true;
+        },
+        mouseLeave2() {
+            this.isHovered2 = false;
         }
     }
 };
@@ -264,7 +284,7 @@ export default {
             </div>
         </div>
         <div class="col-12 xl:col-4">
-            <div class="card mb-0">
+            <div class="card mb-0 div-clicavel" @mouseover="mouseOver2" @mouseleave="mouseLeave2" :class="{ 'dark-overlay': isHovered2 }" @click="redirectRelatorio">
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Faturamento</span>

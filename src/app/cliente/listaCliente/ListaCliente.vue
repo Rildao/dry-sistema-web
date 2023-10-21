@@ -16,20 +16,17 @@ export default {
             totalDePagina: null,
             pagina: 0,
             linha: 0,
-            totalDeElementos: null
+            totalDeElementos: null,
+            pesquisaEvent: ''
         };
     },
     methods: {
         maskCPF,
         maskTelefone,
         pesquisa(event) {
-            const dados = {
-                filtro: event.filters.global.value !== null ? event.filters.global.value : '',
-                linhas: this.linha,
-                pagina: this.pagina
-            };
-            ClienteService.listarCliente(dados.filtro, dados.linhas, dados.pagina).then((res) => {
+            ClienteService.listarCliente(this.pesquisaEvent, event.page, event.rows).then((res) => {
                 this.listaDeCliente = res.data.clientes;
+                this.totalDeElementos = res.data.totalElements;
                 this.totalDePagina = res.data.totalPage;
             });
         },
@@ -83,22 +80,43 @@ export default {
             }
 
             return str;
+        },
+        pesquisaPorNomeOuCPF(filtro) {
+            if (filtro.toString().length >= 2) {
+                ClienteService.listarCliente(filtro)
+                    .then((res) => {
+                        this.listaDeCliente = res.data.clientes;
+                        this.totalDeElementos = res.data.totalElements;
+                        this.totalDePagina = res.data.totalPage;
+                    })
+                    .finally(() => {
+                        this.$store.dispatch('removeRequest');
+                    });
+            }
+        },
+        listarClientes() {
+            this.$store.dispatch('addRequest');
+            ClienteService.listarCliente()
+                .then((res) => {
+                    this.listaDeCliente = res.data.clientes;
+                    this.totalDeElementos = res.data.totalElements;
+                    this.totalDePagina = res.data.totalPage;
+                })
+                .finally(() => {
+                    this.$store.dispatch('removeRequest');
+                });
         }
     },
     mounted() {
-        this.$store.dispatch('addRequest');
-        ClienteService.listarCliente()
-            .then((res) => {
-                this.listaDeCliente = res.data.clientes;
-                this.totalDePagina = res.data.totalPage;
-            })
-            .finally(() => {
-                this.$store.dispatch('removeRequest');
-            });
+        this.listarClientes();
     },
     watch: {
         clienteSelecionado() {
             this.$router.push(`/clientes/editar-cliente/${this.clienteSelecionado.id}`);
+        },
+        pesquisaEvent() {
+            if (this.pesquisaEvent.length >= 2) this.pesquisaPorNomeOuCPF(this.pesquisaEvent);
+            if (this.pesquisaEvent == '') this.listarClientes();
         }
     }
 };
@@ -117,6 +135,8 @@ export default {
                 v-model:filters="filters"
                 :globalFilterFields="['nome', 'cpf']"
                 paginator
+                lazy
+                @page="pesquisa($event)"
                 :rows="5"
                 :pageCount="totalDePagina"
                 :totalRecords="totalDeElementos"
@@ -133,13 +153,15 @@ export default {
                     <div class="flex w-12 justify-content-between">
                         <span class="w-5 p-input-icon-left">
                             <i class="pi pi-search" />
-                            <InputText class="w-12" v-model="filters['global'].value" placeholder="Pesquise pelo nome ou CPF" />
+                            <InputText class="w-12" v-model="pesquisaEvent" placeholder="Pesquise pelo nome ou CPF" />
                         </span>
                         <div class="flex flex-column md:flex-row">
                             <Button label="Baixar" icon="pi pi-file-excel" severity="success" outlined v-tooltip="`Exportar tabela para Excel.`" @click="exportCSV($event)" />
                         </div>
                     </div>
                 </template>
+                <template #empty> Nenhum cliente encontrado </template>
+                <template #loading> Carregando... </template>
                 <Column bodyClass="pointer" field="nome" header="Nome" sortable></Column>
                 <Column field="cpf" bodyClass="pointer" header="CPF">
                     <template #body="{ data }">
