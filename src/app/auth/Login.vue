@@ -58,7 +58,7 @@ export default {
         <div class="flex flex-1 flex-column surface-ground align-items-center justify-content-center">
             <div class="w-11 sm:w-30rem">
                 <div class="flex flex-column">
-                    <div style="height: 56px; width: 56px" class="bg-primary-50 border-circle flex align-items-center justify-content-center"><img src="/demo/images/login/login.png" alt="Image" height="90" class="mb-2" /></div>
+                    <div style="height: 56px; width: 56px" class="bg-primary-50 border-circle flex align-items-center justify-content-center"><i class="pi pi-sign-in text-primary text-4xl"></i></div>
                     <div class="mt-4">
                         <h1 class="m-0 text-secondary font-semibold text-4xl">Bem vindo de volta!</h1>
                         <span class="block text-600 font-medium mt-2">Por favor insira seus dados</span>
@@ -82,6 +82,6 @@ export default {
                 </form>
             </div>
         </div>
-        <div class="hidden lg:flex flex-1 align-items-center justify-content-center bg-cover" style="background-image: url('/demo/images/banner.png')"></div>
+        <div class="hidden lg:flex flex-1 align-items-center justify-content-center bg-cover" style="background-image: url('/demo/images/banner.png')"><img src="/demo/images/login/login.png" alt="" style="width: 20rem" /></div>
     </div>
 </template>
