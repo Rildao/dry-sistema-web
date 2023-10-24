@@ -88,7 +88,6 @@ export default {
         converterJsonParaCSV(objArray) {
             var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
             var str = '';
-
             for (var i = 0; i < array.length; i++) {
                 var line = '';
                 for (var index in array[i]) {
@@ -100,7 +99,7 @@ export default {
                 str += line + '\r\n';
             }
 
-            return str;
+            return str.replace(/<[^>]*>/g, '');
         },
         listarVendas() {
             this.$store.dispatch('addRequest');
